@@ -47,7 +47,7 @@ type stat =
 type cmds =
     ASTStat of stat
   | ASTdef of def * cmds
-  | ASTStatdebut of stat * cmds
+  (*| ASTStatdebut of stat * cmds*)
 
 type def =
     ASTConst of string * typ * expr

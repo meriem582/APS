@@ -15,7 +15,7 @@ open Ast
   
 %token <int> NUM
 %token <string> IDENT
-%token LBRA, RBRA, LPAR, RPAR, ECHO, CONST, FUN, REC, IF, AND, OR, BOOL, INT, SEMICOLON, COLON, COMMA, TIMES, ARROW, TRUE, FALSE, NOT, EQ, LT, TIMES, DIV, STAR, PLUS, MINUS 
+%token LBRA, RBRA, LPAR, RPAR, ECHO, CONST, FUN, REC, IF, AND, OR, BOOL, INT, SEMICOLON, COLON, COMMA, ARROW, STAR
 %type <Ast.expr> expr
 %type <Ast.exprs> exprs
 %type <Ast.cmd list> cmds
@@ -37,7 +37,7 @@ prog: LBRA cmds RBRA    { $2 }
 cmds:
   stat                  { [ASTStat $1] }
   | def SEMICOLON  cmds            { ASTdef($1,$3) }
-  | stat SEMICOLON  cmds            { ASTStatdebut($1,$3) }
+  //| stat SEMICOLON  cmds            { ASTStatdebut($1,$3) }
 ;
 
 stat:
@@ -51,7 +51,7 @@ def:
 ;
 
 typ:
-  BOOL                  { Bool }
+  | BOOL                  { Bool }
   | INT                 { Int }
   | LPAR typs ARROW typ RPAR { ASTArrow($2,$4) }
 ;

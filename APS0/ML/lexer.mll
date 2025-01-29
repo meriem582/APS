@@ -42,15 +42,5 @@ rule token = parse
   | integer as lxm   { NUM(int_of_string lxm) }
   (* identificateurs *)
   | ident as lxm     { IDENT(lxm) }
-  (* symboles primitifs *)
-  | "true"           { TRUE }
-  | "false"          { FALSE }
-  | "not"            { NOT }
-  | "eq"             { EQ }
-  | "lt"             { LT }
-  | "add"            { PLUS }
-  | "sub"            { MINUS }
-  | "mul"            { TIMES }
-  | "div"            { DIV }
   (* fin de fichier *)
   | eof              { raise Eof }

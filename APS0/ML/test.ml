@@ -11,15 +11,45 @@ open Ast
   
 let rec print_expr e =
   match e with
-      ASTNum n -> Printf.printf"%d" n
+      ASTNum n -> Printf.printf"num(%d)" n
     | ASTId x -> Printf.printf"id(%s)" x
-    | ASTApp(e, es) -> (
-	Printf.printf"app(";
-	print_expr e;
-	Printf.printf",[";
-	print_exprs es;
-	Printf.printf"])"
-      )
+    | ASTIf(cond,thn,els) -> (
+      Printf.printf"if(";
+      print_expr cond;
+      Printf.printf",";
+      print_expr thn;
+      Printf.printf",";
+      print_expr els;
+      Printf.printf")"
+    )
+    | ASTAnd(e1,e2) -> (
+      Printf.printf"and(";
+      print_expr e1;
+      Printf.printf",";
+      print_expr e2;
+      Printf.printf")"
+    )
+    | ASTOr(e1,e2) -> (
+      Printf.printf"or(";
+      print_expr e1;
+      Printf.printf",";
+      print_expr e2;
+      Printf.printf")"
+    )                       
+    | ASTApp(e1,e2) -> (
+      Printf.printf"app(";
+      print_expr e1;
+      Printf.printf",[";
+      print_exprs e2;
+      Printf.printf"])"
+    )
+    | ASTLambda(args,e) -> (
+      Printf.printf"lambda([";
+      print_args args;
+      Printf.printf"],";
+      print_expr e;
+      Printf.printf")"
+    )
 and print_exprs es =
   match es with
       [] -> ()
@@ -33,32 +63,104 @@ and print_exprs es =
 let print_stat s =
   match s with
       ASTEcho e -> (
-	Printf.printf("ECHO ");
+	Printf.printf("echo (");
 	print_expr(e);
+  Printf.printf(")")
       )
 
-let print_cmd c =
-  match c with
-      ASTStat s -> print_stat s
+let print_def d =
+  match d with
+    |ASTConst(iden,t,value) -> (
+      Printf.printf("const(%s,",iden);
+      print_typ t;
+      Printf.printf(",");
+      print_expr value;
+      Printf.printf(")")
+      )
+    | ASTFun(iden,t,args,e) -> (
+      Printf.printf("fun(%s,",iden);
+      print_typ t;
+      Printf.printf(",[");
+      print_args args;
+      Printf.printf("],");
+      print_expr e;
+      Printf.printf(")")
+      )
+    | ASTRec(iden,t,args,e) -> (
+      Printf.printf("rec(%s,",iden);
+      print_typ t;
+      Printf.printf(",[");
+      print_args args;
+      Printf.printf("],");
+      print_expr e;
+      Printf.printf(")")
+      )
 	
 let rec print_cmds cs =
   match cs with
-      c::[] -> print_cmd c
-    | _ -> failwith "not yet implemented"
+    ASTStat s -> print_stat s
+    | ASTdef(d,c) -> (
+      print_def d;
+      Printf.printf(",");
+      print_cmds c
+      )
 	
 let print_prog p =
-  Printf.printf("[");
+  Printf.printf("prog([");
   print_cmds p;
-  Printf.printf("]")
+  Printf.printf("])")
 ;;
-	
+    
+(*fonction pour afficher les types*)
+
+let rec print_typ t =
+  match t with
+      Int -> Printf.printf"int"
+    | Bool -> Printf.printf"bool"
+    | ASTArrow(t1,t2) -> (
+    Printf.printf"arrow([";
+    print_typs t1;
+    Printf.printf"] ,";
+    print_typ t2;
+    Printf.printf")"
+    )
+
+let rec print_typs ts =
+  match ts with
+      ASTTyp t -> print_typ t
+    | ASTTyps(t,ts) -> (
+    print_typ t;
+    Printf.printf",";
+    print_typs ts
+    )
+
+(*fonctions pour afficher les arguments*)
+
+let print_arg a =
+  match a with
+      ASTArg(s,t) -> (
+    Printf.printf"arg(%s," s;
+    print_typ t;
+    Printf.printf")"
+    )
+
+let rec print_args ass =  
+  match ass with
+      ASTArgs a -> print_arg a
+    | ASTArgs(a,ass) -> (
+    print_arg a;
+    Printf.printf",";
+    print_args ass
+    )
+
+
+
 let fname = Sys.argv.(1) in
 let ic = open_in fname in
   try
     let lexbuf = Lexing.from_channel ic in
-    let p = Parser.prog Lexer.token lexbuf in
-      print_prog p;
-      print_string ".\n"
-  with Lexer.Eof ->
-    exit 0
-      
+      let p = Parser.prog Lexer.token lexbuf in
+        print_prog p;
+        print_string ".\n"
+    with Lexer.Eof ->
+      exit 0     esult =
