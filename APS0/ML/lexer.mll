@@ -1,46 +1,30 @@
-(* ========================================================================== *)
-(* == UPMC/master/info/4I506 -- Janvier 2016/2017/2018                     == *)
-(* == SU/FSI/master/info/MU4IN503 -- Janvier 2020/2021/2022                == *)
-(* == Analyse des programmes et sémantiques                                == *)
-(* ========================================================================== *)
-(* == hello-APS Syntaxe ML                                                 == *)
-(* == Fichier: lexer.mll                                                   == *)
-(* ==  Lexique                                                             == *)
-(* ========================================================================== *)
+    {
+    open Parser
+    exception Eof
+    }
 
-{
-  open Parser        (* The type token is defined in parser.mli *)
-  exception Eof
-}
-let integer = ('-'?)['0'-'9']+
 
-let ident = ['a'-'z''A'-'Z'](['a'-'z''A'-'Z''0'-'9'])*
+    rule token = parse
+        [' ' '\t' '\n' '\r']+ { token lexbuf }
+    | '[' { Printf.printf "LEXER: Détecté [\n"; LBRA }
+    | ']' { Printf.printf "LEXER: Détecté ]\n"; RBRA }
+    | '(' { Printf.printf "LEXER: Détecté (\n"; LPAR }
+    | ')' { Printf.printf "LEXER: Détecté )\n"; RPAR }
+    | ';' { Printf.printf "LEXER: Détecté ;\n"; SEMCOL }
+    | ':' { Printf.printf "LEXER: Détecté :\n"; COL }
+    | ',' { Printf.printf "LEXER: Détecté ,\n"; COMA }
+    | '*' { Printf.printf "LEXER: Détecté *\n"; STAR }
+    | "->" { Printf.printf "LEXER: Détecté ->\n"; ARROW }
+    | "CONST" { Printf.printf "LEXER: Détecté CONST\n"; CONST }
+    | "FUN" { Printf.printf "LEXER: Détecté FUN\n"; FUN }
+    | "REC" { Printf.printf "LEXER: Détecté REC\n"; REC }
+    | "ECHO" { Printf.printf "LEXER: Détecté ECHO\n"; ECHO }
+    | "if" { Printf.printf "LEXER: Détecté if\n"; IF }
+    | "and" { Printf.printf "LEXER: Détecté and\n"; AND }
+    | "or" { Printf.printf "LEXER: Détecté or\n"; OR }
+    | "bool" { Printf.printf "LEXER: Détecté bool\n"; BOOL }
+    | "int" { Printf.printf "LEXER: Détecté int\n"; INT }
+    | ('-'?)['0'-'9']+ as num { Printf.printf "LEXER: Détecté NUM %s\n" num; NUM (int_of_string num) }
+    | ['a'-'z''A'-'Z'](['a'-'z''A'-'Z''0'-'9'])* as id { Printf.printf "LEXER: Détecté IDENT %s\n" id; IDENT id }
+    | eof { Printf.printf "LEXER: Fin de fichier\n"; raise Eof }
 
-rule token = parse
-    [' ' '\t' '\n']       { token lexbuf }     (* skip blanks *)
-  (* symbole réservés *)
-  | '['              { LBRA }
-  | ']'              { RBRA }
-  | '('              { LPAR }
-  | ')'              { RPAR }
-  | ';'              { SEMICOLON }
-  | ':'              { COLON }
-  | ','              { COMMA }  
-  | '*'              { STAR }
-  | "->"             { ARROW }
-  (*mots clés*)
-  | "CONST"          { CONST }
-  | "FUN"            { FUN }
-  | "REC"            { REC }
-  | "ECHO"           { ECHO }
-  | "if"             { IF }
-  | "and"            { AND }
-  | "or"             { OR }
-  | "bool"           { BOOL }
-  | "int"            { INT } 
-  (* constantes numériques *)
-  | integer as lxm   { NUM(int_of_string lxm) }
-  (* identificateurs *)
-  | ident as lxm     { IDENT(lxm) }
-  (* fin de fichier *)
-  | eof              { raise Eof }
