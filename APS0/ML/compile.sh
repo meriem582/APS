@@ -16,8 +16,8 @@ ocamlc -c parser.mli
 ocamlc -c parser.ml
 ocamlc -c lexer.ml
 ocamlc -c eval.ml
-ocamlc -c main.ml
-ocamlc -o aps0_interpreter lexer.cmo parser.cmo ast.cmo eval.cmo main.cmo
+ocamlc -c mainEval.ml
+ocamlc -o aps0_interpreter lexer.cmo parser.cmo ast.cmo eval.cmo mainEval.cmo
 
 echo "Compilation terminée avec succès !"
 
@@ -43,3 +43,5 @@ do
         echo "Got: ${result_values[*]}"
     fi
 done
+
+rm -f *.cmo *.cmi parser.ml parser.mli lexer.ml mainEval eval

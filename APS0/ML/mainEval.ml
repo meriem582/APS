@@ -26,6 +26,7 @@ try
   in
   let _ = eval_prog p in
   Printf.printf "Évaluation terminée avec succès.\n"
+  
 with
 | Lexer.Eof -> Printf.printf "Erreur : fin de fichier inattendue.\n"
 | Sys_error msg -> Printf.printf "Erreur système : %s\n" msg; exit 1
