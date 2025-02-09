@@ -1,1 +1,1 @@
-[ ECHO (add true true)]
+[ ECHO (add 12 42) ]

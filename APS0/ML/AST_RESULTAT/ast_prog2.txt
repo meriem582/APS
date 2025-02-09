@@ -1,0 +1,1 @@
+prog([echo(app(id(add), [id(x), num(42)]))])

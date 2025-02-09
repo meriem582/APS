@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #fichier egalement travailler avec chatGPT pour que je puisse automatiser 
-#la compilation des mes fichiers egalement de lancer directement l'executable qui est test
+#la compilation des mes fichiers egalement de lancer directement l'executable qui est Eval
 
 #!/bin/bash
 
@@ -11,7 +11,7 @@ set -e  # Arrêter le script en cas d'erreur
 echo "🚀 Compilation et génération des fichiers nécessaires..."
 
  # Création du dossier de sortie si nécessaire
-output_dir="AST_RESULTAT"
+output_dir="EVAL_RESULTAT"
 mkdir -p "$output_dir"
 
 # Génération des fichiers lexer et parser
@@ -26,11 +26,11 @@ ocamlc -c ast.ml
 ocamlc -c parser.mli
 ocamlc -c parser.ml
 ocamlc -c lexer.ml
-ocamlc -c test.ml
-ocamlc -c mainTest.ml
+ocamlc -c eval.ml
+ocamlc -c mainEval.ml
 
 # Linkage et création de l'exécutable
-ocamlc -o mainTest ast.cmo parser.cmo lexer.cmo test.cmo mainTest.cmo
+ocamlc -o mainEval ast.cmo parser.cmo lexer.cmo eval.cmo mainEval.cmo
 
 echo "✅ Compilation terminée avec succès !"
 
@@ -40,28 +40,14 @@ if [ "$#" -gt 0 ]; then
     for file in "$@"; do
         if [ -f "$file" ]; then
             filename=$(basename -- "$file")
-            output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans AST_RESULTAT/
+            output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/
             
             echo "📄 Traitement du fichier : $file"
             echo " "
-            echo "🔍 Contenu généré par mainTest :"
-            ./mainTest "$file" | tee "$output_file"
-            echo "." >> "$output_file"
-            echo " "
-            echo "🔍 Passage du contenu à Prolog :"
-            typage=$(cat "$output_file" | swipl -s typer.pl -g main_stdin -t halt)
-            echo "🔍 Résultat de Prolog : $typage"
-
-            if [[ "$typage" == *"void"* ]]; then
-                echo "✅ Bien typé"
-            elif [[ "$typage" == *"type_error"* ]]; then
-                echo "❌ Erreur de typage !!!"
-            else
-                echo "⚠️ Résultat inattendu : $typage"
-            fi
+            ./mainEval "$file" | tee "$output_file"
             echo " "
             echo " "
-            echo "✅ AST affiché pour $file et sauvegardé dans $output_file"
+            echo "✅ Résultat de l'évaluation de $file est affiché et sauvegardé dans $output_file"
             echo ""
         else
             echo "⚠️  Le fichier '$file' n'existe pas."
@@ -80,13 +66,13 @@ else
         if [ -f "$file" ]; then
             found=1
             filename=$(basename -- "$file")
-            output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans AST_RESULTAT/            
+            output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/            
             echo "📄 Traitement du fichier : $file"
             echo " "
-            ./mainTest "$file" | tee "$output_file"
+            ./mainEval "$file" | tee "$output_file"
             echo " "
             echo " "
-            echo "✅ AST affiché pour $file et sauvegardé dans $output_file"
+            echo "✅ Résultat de l'évaluation de $file est affiché et sauvegardé dans $output_file"
             echo ""
         fi
     done
@@ -97,5 +83,5 @@ else
 fi
 
 
-rm -f *.cmo *.cmi parser.ml parser.mli lexer.ml test mainTest
+rm -f *.cmo *.cmi parser.ml parser.mli lexer.ml Eval mainEval
 
