@@ -67,19 +67,15 @@ let rec eval_expr (env: env) (e: expr) : valeur =
 
   | ASTAnd (e1, e2) -> (
       match eval_expr env e1, eval_expr env e2 with
-      | InZ 0, InZ 0 -> InZ 0
-      | InZ 1, InZ 0 -> InZ 0
-      | InZ 0, InZ 1 -> InZ 0
-      | InZ 1, InZ 1 -> InZ 1
+      | InZ 1, InZ x -> InZ x
+      | InZ 0, InZ _ -> InZ 0
       | _ -> failwith "Opérateurs and doivent être booléens"
     )
 
   | ASTOr (e1, e2) -> (
       match eval_expr env e1, eval_expr env e2 with
-      | InZ 0, InZ 0 -> InZ 0
-      | InZ 1, InZ 0 -> InZ 1
-      | InZ 0, InZ 1 -> InZ 1
-      | InZ 1, InZ 1 -> InZ 1
+      | InZ 0, InZ x -> InZ  x
+      | InZ 1, InZ _ -> InZ 1
       | _ -> failwith "Opérateurs or doivent être booléens"
     )
 
