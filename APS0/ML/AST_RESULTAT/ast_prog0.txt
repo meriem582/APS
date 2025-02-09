@@ -1,1 +1,1 @@
-prog([echo(num(42))]).
+prog([echo(num(42))])

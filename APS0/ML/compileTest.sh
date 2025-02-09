@@ -46,10 +46,9 @@ if [ "$#" -gt 0 ]; then
             echo " "
             echo "🔍 Contenu généré par mainTest :"
             ./mainTest "$file" | tee "$output_file"
-            echo "." >> "$output_file"
             echo " "
             echo "🔍 Passage du contenu à Prolog :"
-            typage=$(cat "$output_file" | swipl -s typer.pl -g main_stdin -t halt)
+            typage=$( (cat "$output_file"; echo ".") | swipl -s typer.pl -g main_stdin -t halt)
             echo "🔍 Résultat de Prolog : $typage"
 
             if [[ "$typage" == *"void"* ]]; then

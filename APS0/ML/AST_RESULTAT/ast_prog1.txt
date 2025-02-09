@@ -1,1 +1,1 @@
-prog([echo(id(x))]).
+prog([echo(id(x))])

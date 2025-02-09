@@ -114,7 +114,6 @@ is_type_expr(G,app(E, EI), T) :- is_type_expr(G,E,arrow(TI,T)), verifieEI(G,EI,T
 
 is_type_expr(G, lambda(ARGS,E), arrow(TI,T)) :- append(ARGS,G,GI),rec_type_args(ARGS,TI), is_type_expr(GI,E,T).
 
-# main_stdin:- read(user_input,T), is_type_prog([], T, R), print(R).
 main_stdin :-
     read(user_input, T),
     ( is_type_prog([], T, R) ->
