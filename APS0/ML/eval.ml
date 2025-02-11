@@ -55,8 +55,8 @@ let rec eval_expr (env: env) (e: expr) : valeur =
   | ASTNum n -> InZ n
 
   | ASTId x -> (match (isBool x) with
-    | true -> evaluationBool x
-    | false -> (try Env.find x env with Not_found -> failwith ("Variable inconnue: " ^ x)))
+        | true -> evaluationBool x
+        | false -> (try Env.find x env with Not_found -> failwith ("Variable inconnue: " ^ x)))
 
   | ASTIf (cond, e1, e2) -> (
       match eval_expr env cond with
@@ -124,8 +124,7 @@ let eval_def (env: env) (d: def) : env =
 let rec eval_cmds (env: env) (cmds: cmds) (sortie: sortie) : sortie =
   match cmds with
   | ASTStat s ->
-      let new_sortie = eval_stat env s sortie in
-      new_sortie  (* Retourne la liste mise à jour *)
+     eval_stat env s sortie 
   | ASTDef (d, cmds) ->
       let new_env = eval_def env d in
       eval_cmds new_env cmds sortie
