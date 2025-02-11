@@ -84,6 +84,17 @@ else
             echo " "
             ./mainTest "$file" | tee "$output_file"
             echo " "
+            echo "🔍 Passage du contenu à Prolog :"
+            typage=$( (cat "$output_file"; echo ".") | swipl -s typer.pl -g main_stdin -t halt)
+            echo "🔍 Résultat de Prolog : $typage"
+
+            if [[ "$typage" == *"void"* ]]; then
+                echo "✅ Bien typé"
+            elif [[ "$typage" == *"type_error"* ]]; then
+                echo "❌ Erreur de typage !!!"
+            else
+                echo "⚠️ Résultat inattendu : $typage"
+            fi
             echo " "
             echo "✅ AST affiché pour $file et sauvegardé dans $output_file"
             echo ""
