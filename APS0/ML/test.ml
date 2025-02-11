@@ -18,7 +18,7 @@ let rec print_typ t =
   | ASTArrow(args, ret) ->
       Printf.printf "arrow([";
       print_typs args;
-      Printf.printf "] -> ";
+      Printf.printf "],";
       print_typ ret;
       Printf.printf ")"
 
@@ -26,13 +26,14 @@ and print_typs ts =
   match ts with
   | [] -> ()
   | [t] -> print_typ t
-  | t::ts ->
+  | t::trs ->
       print_typ t;
-      Printf.printf ", ";
-      print_typs ts
+      Printf.printf ",";
+      print_typs trs
 
 let print_arg (Arg(name, t)) =
-  Printf.printf "(%s: " name;
+  Printf.printf "(%s" name;
+  Printf.printf ",";
   print_typ t;
   Printf.printf ")"
 
@@ -42,7 +43,7 @@ let rec print_args args =
   | [a] -> print_arg a
   | a::as' ->
       print_arg a;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_args as'
 
 let rec print_expr e =
@@ -50,35 +51,35 @@ let rec print_expr e =
   | ASTNum n -> Printf.printf "num(%d)" n
   | ASTId id -> Printf.printf "id(%s)" id
   | ASTIf(cond, cons, alt) ->
-      Printf.printf "if (";
+      Printf.printf "if(";
       print_expr cond;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_expr cons;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_expr alt;
       Printf.printf ")"
   | ASTAnd(e1, e2) ->
-      Printf.printf "and (";
+      Printf.printf "and(";
       print_expr e1;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_expr e2;
       Printf.printf ")"
   | ASTOr(e1, e2) ->
-      Printf.printf "or (";
+      Printf.printf "or(";
       print_expr e1;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_expr e2;
       Printf.printf ")"
   | ASTApp(e, es) ->
       Printf.printf "app(";
       print_expr e;
-      Printf.printf ", [";
+      Printf.printf ",[";
       print_exprs es;
       Printf.printf "])"
   | ASTLambda(args, e) ->
       Printf.printf "lambda ([";
       print_args args;
-      Printf.printf "] -> ";
+      Printf.printf "],";
       print_expr e;
       Printf.printf ")"
 
@@ -88,7 +89,7 @@ and print_exprs es =
   | [e] -> print_expr e
   | e::es' ->
       print_expr e;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_exprs es'
 
 let print_stat s =
@@ -101,25 +102,25 @@ let print_stat s =
 let print_def d =
   match d with
   | ASTConst(id, t, e) ->
-      Printf.printf "const(%s, " id;
+      Printf.printf "const(%s," id;
       print_typ t;
-      Printf.printf ", ";
+      Printf.printf ",";
       print_expr e;
       Printf.printf ")"
   | ASTFun(id, t, args, e) ->
-      Printf.printf "fun(%s, " id;
+      Printf.printf "fun(%s," id;
       print_typ t;
-      Printf.printf ", [";
+      Printf.printf ",[";
       print_args args;
-      Printf.printf "], ";
+      Printf.printf "],";
       print_expr e;
       Printf.printf ")"
   | ASTFunRec(id, t, args, e) ->
-      Printf.printf "funRec(%s, " id;
+      Printf.printf "funRec(%s," id;
       print_typ t;
-      Printf.printf ", [";
+      Printf.printf ",[";
       print_args args;
-      Printf.printf "], ";
+      Printf.printf "],";
       print_expr e;
       Printf.printf ")"
 
@@ -129,7 +130,7 @@ let rec print_cmds c =
   | ASTDef(d, c') ->
       Printf.printf "cmds(";
       print_def d;
-      Printf.printf "), ";
+      Printf.printf "),";
       print_cmds c'
 
 let print_prog p =

@@ -1,1 +1,0 @@
-prog([cmds(fun(g, int, [(x: int)], app(id(add), [id(x), num(1)]))), echo(app(id(g), [num(5)]))])

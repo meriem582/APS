@@ -48,9 +48,6 @@ if [ "$#" -gt 0 ]; then
             ./mainTest "$file" | tee "$output_file"
             echo " "
             echo "🔍 Passage du contenu à Prolog :"
-            echo "📜 Contenu de l'AST envoyé à Prolog :"
-            cat "$output_file"  # Affiche le contenu exact avant Prolog
-
             typage=$( (cat "$output_file"; echo ".") | swipl -s typer.pl -g main_stdin -t halt)
             echo "🔍 Résultat de Prolog : $typage"
 
@@ -97,7 +94,4 @@ else
         echo "⚠️  Aucun fichier .aps trouvé dans Samples/"
     fi
 fi
-
-
-rm -f *.cmo *.cmi parser.ml parser.mli lexer.ml test mainTest
 

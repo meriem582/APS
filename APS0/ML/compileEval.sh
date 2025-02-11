@@ -83,5 +83,3 @@ else
 fi
 
 
-rm -f *.cmo *.cmi parser.ml parser.mli lexer.ml Eval mainEval
-

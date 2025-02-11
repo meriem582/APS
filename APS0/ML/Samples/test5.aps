@@ -1,5 +1,0 @@
-[
-  CONST x int 42;
-  FUN f int [x:int] (add x 1);
-  ECHO (f x)
-]
