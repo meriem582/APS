@@ -1,0 +1,1 @@
+prog([echo(or(id(true),id(false)))])
