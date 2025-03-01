@@ -1,0 +1,1 @@
+prog([cmds(const(x,int,num(0))),cmds(fun(x,int,[(x,int)],id(x))),echo(app(id(x),[id(x)]))])
