@@ -1,0 +1,3 @@
+5
+Résultat: 5
+Évaluation terminée avec succès.

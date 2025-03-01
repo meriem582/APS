@@ -1,0 +1,3 @@
+42
+Résultat: 42
+Évaluation terminée avec succès.

@@ -77,7 +77,7 @@ let rec print_expr e =
       print_exprs es;
       Printf.printf "])"
   | ASTLambda(args, e) ->
-      Printf.printf "lambda ([";
+      Printf.printf "lambda([";
       print_args args;
       Printf.printf "],";
       print_expr e;

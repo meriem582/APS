@@ -1,0 +1,1 @@
+prog([cmds(funRec(si,int,[(x,int)],if(app(id(eq),[id(x),num(0)]),num(0),app(id(si),[app(id(sub),[id(x),num(1)])])))),echo(app(id(si),[num(3)]))])

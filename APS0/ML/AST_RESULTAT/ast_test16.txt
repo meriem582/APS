@@ -1,0 +1,1 @@
+prog([cmds(fun(f,int,[(x,int)],app(id(add),[id(x),num(5)]))),echo(app(id(f),[num(37)]))])

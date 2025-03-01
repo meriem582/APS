@@ -1,0 +1,1 @@
+prog([cmds(fun(f,int,[(x,bool)],if(id(x),num(3),num(0)))),echo(app(lambda([(b,bool)],app(id(f),[id(b)])),[id(true)]))])
