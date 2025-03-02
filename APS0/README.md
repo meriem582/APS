@@ -72,6 +72,3 @@ En cas de problèmes :
 
 - Vérifiez la présence des fichiers APS0 dans `Samples/`.
 - Assurez-vous que OCaml et SWI-Prolog sont installés.
-
-👨‍💻 Projet réalisé pour le cours **MU4IN503 - Analyse des Programmes et Sémantique**.
-
