@@ -1,6 +1,6 @@
 (*fichier fait avec l'aide de chatGPT pour parser un fichier et generer son ast*)
 
-open Test
+open Prologterm
 open Parser
 open Lexer
 open Ast

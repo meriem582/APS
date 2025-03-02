@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #fichier egalement travailler avec chatGPT pour que je puisse automatiser 
-#la compilation des mes fichiers egalement de lancer directement l'executable qui est test
+#la compilation des mes fichiers egalement de lancer directement l'executable qui est prologterm
 
 #!/bin/bash
 
@@ -26,11 +26,11 @@ ocamlc -c ast.ml
 ocamlc -c parser.mli
 ocamlc -c parser.ml
 ocamlc -c lexer.ml
-ocamlc -c test.ml
-ocamlc -c mainTest.ml
+ocamlc -c prologterm.ml
+ocamlc -c mainTyper.ml
 
 # Linkage et création de l'exécutable
-ocamlc -o mainTest ast.cmo parser.cmo lexer.cmo test.cmo mainTest.cmo
+ocamlc -o mainTyper ast.cmo parser.cmo lexer.cmo prologterm.cmo mainTyper.cmo
 
 echo "✅ Compilation terminée avec succès !"
 
@@ -44,8 +44,8 @@ if [ "$#" -gt 0 ]; then
             
             echo "📄 Traitement du fichier : $file"
             echo " "
-            echo "🔍 Contenu généré par mainTest :"
-            ./mainTest "$file" | tee "$output_file"
+            echo "🔍 Contenu généré par mainTyper :"
+            ./mainTyper "$file" | tee "$output_file"
             echo " "
             echo "🔍 Passage du contenu à Prolog :"
             typage=$( (cat "$output_file"; echo ".") | swipl -s typer.pl -g main_stdin -t halt)
@@ -82,7 +82,7 @@ else
             output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans AST_RESULTAT/            
             echo "📄 Traitement du fichier : $file"
             echo " "
-            ./mainTest "$file" | tee "$output_file"
+            ./mainTyper "$file" | tee "$output_file"
             echo " "
             echo "🔍 Passage du contenu à Prolog :"
             typage=$( (cat "$output_file"; echo ".") | swipl -s typer.pl -g main_stdin -t halt)
