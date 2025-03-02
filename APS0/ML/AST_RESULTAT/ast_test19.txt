@@ -1,0 +1,1 @@
+prog([cmds(fun(f,arrow([int],int),[(x,int)],lambda([(y,int)],app(id(add),[id(x),id(y)])))),echo(app(app(id(f),[num(21)]),[num(21)]))])

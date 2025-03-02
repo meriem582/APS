@@ -105,7 +105,7 @@ let rec eval_expr (env: env) (e: expr) : valeur =
         let result = eval_expr env expr in
         (match result with
         | InZ n -> Printf.printf "%d\n" n
-        | _ -> failwith "ECHO ne peut afficher que des entiers ou des booléens");
+        | _ -> failwith "ECHO ne peut afficher que des entiers");
         result :: sortie
  
 

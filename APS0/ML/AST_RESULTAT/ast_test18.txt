@@ -1,0 +1,1 @@
+prog([echo(app(lambda([(f,arrow([int],int))],app(id(f),[num(37)])),[lambda([(x,int)],app(id(add),[id(x),num(5)]))]))])
