@@ -1,11 +1,11 @@
 # 🚀 Projet APS - Analyse et Sémantique des Programmes
 
 Ce projet est divisé en plusieurs parties (étapes de l'implémentation d'APS) :
-- **APS0** : Noyau fonctionnel avec typage et évaluation.
-- **APS1** : Extension avec nouvelles constructions syntaxiques.
-- **APS1a** : Optimisations et gestion avancée des erreurs.
-- **APS2** : Ajout de la gestion des environnements et portées.
-- **APS3** : Implémentation de nouvelles sémantiques dynamiques.
+- **APS0** : Noyau fonctionnel.
+- **APS1** : Noyeau impératif.
+- **APS1a** : Valeur ou référence.
+- **APS2** : Tableaux.
+- **APS3** : Fonctions procédurales.
 
 ## 📁 Structure du projet
 
