@@ -5,8 +5,8 @@ module Env = Map.Make(String)
 (* Type pour les valeurs manipulées *)
 type valeur =
   | InZ of int
-  | InF of arg list * expr * valeur Env.t  (* Fermeture pour les fonctions *)
-  | InFR of string * arg list * expr * valeur Env.t  (* Fonction récursive *)
+  | InF of expr * arg list * valeur Env.t  (* Fermeture pour les fonctions *)
+  | InFR of  expr * string * arg list  * valeur Env.t  (* Fonction récursive *)
 
 type env = valeur Env.t
 
@@ -79,7 +79,7 @@ let rec eval_expr (env: env) (e: expr) : valeur =
       | _ -> failwith "Opérateurs or doivent être booléens"
     )
 
-  | ASTLambda (params, body) -> InF (params, body, env)
+  | ASTLambda (params, body) -> InF (body, params, env)
 
   | ASTApp (func, args) ->
     let args_values = List.map (fun arg -> eval_expr env arg) args in
@@ -87,11 +87,11 @@ let rec eval_expr (env: env) (e: expr) : valeur =
     else
       let func_value = eval_expr env func in
       match func_value with
-      | InF (params, body, closure_env) ->
+      | InF (body, params, closure_env) ->
         let new_env = List.fold_left2 (fun acc (Arg (x, _)) v -> Env.add x v acc) closure_env params args_values in
         eval_expr new_env body
-      | InFR (name, params, body, closure_env) ->
-        let rec_env = Env.add name (InFR (name, params, body, closure_env)) closure_env in
+      | InFR (body, name, params, closure_env) ->
+        let rec_env = Env.add name (InFR (body, name, params, closure_env)) closure_env in
         let new_env = List.fold_left2 (fun acc (Arg (x, _)) v -> Env.add x v acc) rec_env params args_values in
         eval_expr new_env body
       | _ -> failwith "Appel de fonction invalide"
@@ -114,9 +114,9 @@ let rec eval_expr (env: env) (e: expr) : valeur =
 let eval_def (env: env) (d: def) : env =
   match d with
   | ASTConst (x, _, e) -> Env.add x (eval_expr env e) env
-  | ASTFun (f, _, args, e) -> Env.add f (InF (args, e, env)) env
+  | ASTFun (f, _, args, e) -> Env.add f (InF ( e, args, env)) env
   | ASTFunRec (f, _, args, e) ->
-    let rec_env = Env.add f (InFR (f, args, e, env)) env in
+    let rec_env = Env.add f (InFR (e, f, args, env)) env in
     rec_env
 
 (* Évaluation des commandes *)
