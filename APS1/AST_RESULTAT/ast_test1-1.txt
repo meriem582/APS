@@ -1,1 +1,1 @@
-block([cmds(var(x,int)),cmds(var(y,int)),cmds(set(x,num(10))),cmds(set(y,num(20))),echo(app(id(add),[id(x),id(y)]))])
+prog(block([cmds(var(x,int)),cmds(var(y,int)),cmds(set(x,num(1))),cmds(set(y,num(2))),echo(app(id(sub),[id(y),id(x)]))]))

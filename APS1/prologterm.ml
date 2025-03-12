@@ -185,3 +185,8 @@ and print_block b =
       Printf.printf "block([";
       print_cmds c;
       Printf.printf "])"
+
+and print_prog p =
+      Printf.printf "prog(";
+      print_block p;
+      Printf.printf ")"

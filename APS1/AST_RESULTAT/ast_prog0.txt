@@ -1,1 +1,1 @@
-block([echo(num(42))])
+prog(block([echo(num(42))]))

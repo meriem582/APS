@@ -21,8 +21,8 @@ let parse_and_print filename =
   let input_code = read_file filename in
   let lexbuf = Lexing.from_string input_code in
   try
-    let p = Parser.block Lexer.token lexbuf in
-    print_block p  
+    let p = Parser.prog Lexer.token lexbuf in
+    print_prog p  
   with
   | Lexer.Eof ->
       Printf.eprintf "Lexer error: unexpected EOF in file %s\n" filename

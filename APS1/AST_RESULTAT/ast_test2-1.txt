@@ -1,0 +1,1 @@
+prog(block([cmds(proc(addTwo [(x,int)],block([cmds(var(temp,int)),cmds(set(temp,app(id(add),[id(x),num(2)]))),echo(id(temp))]))),cmds(var(value,int)),cmds(set(value,num(5))),call(addTwo,id(value))]))

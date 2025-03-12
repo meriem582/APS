@@ -34,4 +34,3 @@
     | ('-'?)['0'-'9']+ as num { NUM (int_of_string num) }
     | ['a'-'z''A'-'Z'](['a'-'z''A'-'Z''0'-'9'])* as id { IDENT id }
     | eof { raise Eof }
-

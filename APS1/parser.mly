@@ -9,7 +9,7 @@
 %token <string> IDENT
 
 
-
+%type <Ast.block> prog
 %type <Ast.block> block
 %type <Ast.cmds> cmds
 %type <Ast.def> def
@@ -21,9 +21,13 @@
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
 
-%start block
+%start prog
 
 %%
+prog:
+  | block  { $1 }
+;
+
 block:
   | LBRA cmds RBRA { ASTBlock($2) }
 ;

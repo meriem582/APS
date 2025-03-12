@@ -36,7 +36,6 @@ type stat =
   | ASTWhile of expr * block
   | ASTCall of string * expr list
 
-
 and def =
   | ASTConst of string * typ * expr
   | ASTFun of string * typ * arg list * expr
@@ -44,7 +43,6 @@ and def =
   | ASTVar of string * typ
   | ASTProc of string * arg list * block
   | ASTProcRec of string * arg list * block 
-
 
 and cmds =
   | ASTStat of stat
