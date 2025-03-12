@@ -1,0 +1,1 @@
+block([cmds(var(x,int)),cmds(var(y,int)),cmds(set(x,num(10))),cmds(set(y,num(20))),echo(app(id(add),[id(x),id(y)]))])
