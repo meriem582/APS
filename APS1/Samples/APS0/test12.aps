@@ -1,0 +1,4 @@
+[
+FUN f int [x:bool](if x 3 0);
+ECHO ([b:bool](f b) true)
+]
