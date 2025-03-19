@@ -25,6 +25,7 @@
     | "bool" {  BOOL }
     | "int" {  INT }
     | "void" {  VOID }
+    | "IF" { IFSTAT }
     | "SET" { SET }
     | "WHILE" { WHILE }
     | "VAR" { VAR }

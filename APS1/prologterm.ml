@@ -100,7 +100,7 @@ and print_stat s =
       print_expr e;
       Printf.printf ")"
   | ASTSet(id, e) ->
-      Printf.printf "set(%s," id;
+      Printf.printf "set(id(%s)," id;
       print_expr e;
       Printf.printf ")"
   | ASTIfStat(cond, bk1, bk2) -> 
@@ -118,9 +118,9 @@ and print_stat s =
       print_block bk;
       Printf.printf ")"
   | ASTCall(id, es) ->
-      Printf.printf "call(%s," id;
+      Printf.printf "call(id(%s),[" id;
       print_exprs es;
-      Printf.printf ")"
+      Printf.printf "])"
 
 and print_def d =
   match d with
@@ -151,15 +151,13 @@ and print_def d =
       print_typ t;
       Printf.printf ")"
   | ASTProc(id, args, bk) ->
-      Printf.printf "proc(%s" id;
-      Printf.printf" [";
+      Printf.printf "proc(%s,[" id;
       print_args args;
       Printf.printf "],";
       print_block bk;
       Printf.printf ")"
     | ASTProcRec(id, args, bk) ->
-      Printf.printf "procRec(%s" id;
-      Printf.printf" [";
+      Printf.printf "procRec(%s,[" id;
       print_args args;
       Printf.printf "],";
       print_block bk;
@@ -174,9 +172,8 @@ and print_cmds c =
       Printf.printf "),";
       print_cmds c'
   | ASTStatCMDS(s, c') ->
-      Printf.printf "cmds(";
       print_stat s;
-      Printf.printf "),";
+      Printf.printf ",";
       print_cmds c'
   
 and print_block b =

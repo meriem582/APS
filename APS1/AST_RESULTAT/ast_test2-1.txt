@@ -1,1 +1,1 @@
-prog(block([cmds(proc(addTwo [(x,int)],block([cmds(var(temp,int)),cmds(set(temp,app(id(add),[id(x),num(2)]))),echo(id(temp))]))),cmds(var(value,int)),cmds(set(value,num(5))),call(addTwo,id(value))]))
+prog(block([cmds(proc(printBool,[(b,bool)],block([ifStat(id(b),block([echo(num(42))]),block([echo(num(0))]))]))),call(id(printBool),[app(id(lt),[num(0),num(1)])])]))

@@ -32,9 +32,11 @@ gamma0([
 /* is_type_prog est le jugement de typage de programme */
 /* is_type_cmds est le jugement de typage de suite de commandes, il est définie juste après */
 /* le principe est que si CS passe le jugement de typage de CMDS "est jugé comme étant suite de commandes dans le context G0" alors [CS] passe le jugement de typage de programme "programme bien typé ✅"  */
-is_type_prog(G0, prog(CS), void) :- is_type_cmds(G0, CS, void).
+is_type_prog(G0, prog(CS), void) :- is_type_block(G0, CS, void).
 
 
+/*Block*/
+is_type_block(G, block(CS), void) :- is_type_cmds(G, CS, void).
 
 /*suite de commandes*/
 /* les DEFS */
@@ -73,9 +75,31 @@ is_type_def(G,funRec(X,T,ARGS,E),GI):-
 	is_type_expr(G2,E,T),
 	GI=[(X,arrow(TI,T))|G]. 
 
+/*VAR*/
+is_type_def(G,var(X,T),[(X,T)|G]).
+
+/*PROC*/
+is_type_def(G,proc(X,ARGS,CS),GI) :- append(ARGS,G,G1), is_type_block(G1,CS,void), rec_type_args(ARGS,TI), GI=[(X,arrow(TI,void))|G].
+
+/*PROCREC*/
+is_type_def(G,procRec(X,ARGS,CS),GI) :-  rec_type_args(ARGS,TI), append(ARGS,G,G1), G2=[(X,arrow(TI,T))|G1], is_type_block(G2,CS,T), GI=[(X,arrow(TI,T))|G].
+
 /*Introduction*/
-/* jugement de typage de stat "ECHO" */
+/* jugement de typage de stat "ECHO" "SET" "IF" "WHILE" "CALL" */
+/*ECHO*/
 is_type_stat(G,echo(E),void) :- is_type_expr(G,E,int).
+
+/*SET*/
+is_type_stat(G,set(id(X),E),void) :- is_type_expr(G,E,T), is_type_expr(G,id(X),T).
+
+/*IF*/
+is_type_stat(G,ifStat(E,BK1,BK2),void) :- is_type_expr(G,E,bool), is_type_block(G,BK1,void), is_type_block(G,BK2,void).
+
+/*WHILE*/
+is_type_stat(G,while(E,BK),void) :- is_type_expr(G,E,bool), is_type_block(G,BK,void).
+
+/*CALL*/
+is_type_stat(G,call(X,EI),void) :- is_type_expr(G,X,arrow(TI,void)), verifieEI(G,EI,TI).
 
 /*Expression*/
 /* jugement de typage d'expression */

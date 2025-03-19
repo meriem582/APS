@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),cmds(proc(p,[(y,int)],block([set(id(x),app(id(add),[id(x),num(1)])),echo(id(y))]))),set(id(x),num(0)),while(app(id(lt),[id(x),num(10)]),block([call(id(p),[id(x)])]))]))

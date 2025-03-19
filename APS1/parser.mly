@@ -4,7 +4,7 @@
 %}
 
 %token LBRA RBRA LPAR RPAR SEMCOL COL COMA ARROW STAR
-%token CONST FUN REC ECHO IF AND OR BOOL INT SET VAR WHILE PROC CALL VOID
+%token CONST FUN REC ECHO IF AND OR BOOL INT SET VAR WHILE PROC CALL VOID IFSTAT
 %token <int> NUM
 %token <string> IDENT
 
@@ -72,7 +72,7 @@ args:
 stat:
   | ECHO expr { ASTEcho($2) }
   | SET IDENT expr { ASTSet($2, $3) }
-  | IF expr block block { ASTIfStat($2, $3, $4) }
+  | IFSTAT expr block block { ASTIfStat($2, $3, $4) }
   | WHILE expr block { ASTWhile($2, $3) }
   | CALL IDENT exprs { ASTCall($2, $3) }
 ;

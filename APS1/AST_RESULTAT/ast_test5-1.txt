@@ -1,0 +1,1 @@
+prog(block([cmds(const(x,int,num(0))),ifStat(app(id(eq),[id(x),num(42)]),block([echo(id(x))]),block([echo(num(42))]))]))
