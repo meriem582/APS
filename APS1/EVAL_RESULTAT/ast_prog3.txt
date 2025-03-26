@@ -1,1 +1,1 @@
-Erreur interne : Variable inconnue: x
+Erreur interne : x : Variable ou fonction non définie dans l'environnement

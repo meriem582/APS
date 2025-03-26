@@ -62,7 +62,7 @@ else
 
     echo "🔍 Recherche des fichiers .aps dans le dossier Samples/..."
     found=0
-    for file in Samples/*.aps; do
+    for file in Samples/*/*.aps; do
         if [ -f "$file" ]; then
             found=1
             filename=$(basename -- "$file")
