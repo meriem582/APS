@@ -24,7 +24,13 @@ try
         Printf.printf "Erreur de syntaxe à la ligne %d, colonne %d\n" line cnum;
         exit 1
   in
-  let _ = eval_prog p in
+  let result = eval_prog p in  (* Récupère la sortie du programme *)
+  
+  (* Affichage des valeurs retournées par ECHO *)
+  List.iter (fun v -> match v with
+      | InZ n -> Printf.printf "%d\n" n 
+      | _ -> ()) result;
+
   Printf.printf "Évaluation terminée avec succès.\n"
   
 with
