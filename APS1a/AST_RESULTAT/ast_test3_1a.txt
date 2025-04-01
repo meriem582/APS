@@ -1,0 +1,1 @@
+prog(block([cmds(proc(swap,[(argVar(x),int),(argVar(y),int)],block([cmds(var(temp,int)),set(id(temp),id(x)),set(id(x),id(y)),set(id(y),id(temp))]))),cmds(var(a,int)),cmds(var(b,int)),set(id(a),num(10)),set(id(b),num(20)),call(id(swap),[exprProc(a),exprProc(b)]),echo(id(b))]))

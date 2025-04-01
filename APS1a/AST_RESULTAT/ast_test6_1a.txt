@@ -1,0 +1,1 @@
+prog(block([cmds(fun(f,int,[(x,bool)],if(id(x),num(0),num(1)))),cmds(var(x,int)),set(id(x),id(f)),echo(app(id(add),[id(x),app(id(f),[id(true)])]))]))

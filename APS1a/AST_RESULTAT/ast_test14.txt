@@ -1,0 +1,1 @@
+prog(block([echo(app(lambda([(x,int)],app(id(add),[id(x),num(5)])),[num(37)]))]))

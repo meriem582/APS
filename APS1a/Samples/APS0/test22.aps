@@ -1,0 +1,4 @@
+[   CONST x int 24;
+    FUN f int [y:int] (add y 1);
+    ECHO (f x)
+]

@@ -1,0 +1,6 @@
+[
+   FUN f int [x:bool] (if x 0 1);
+   VAR x int;
+   SET x f;
+   ECHO (add x (f true ))
+]

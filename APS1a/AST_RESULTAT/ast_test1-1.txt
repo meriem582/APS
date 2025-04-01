@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),cmds(var(y,int)),set(id(x),num(1)),set(id(y),num(2)),echo(app(id(sub),[id(y),id(x)]))]))

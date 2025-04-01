@@ -1,0 +1,1 @@
+prog(block([cmds(proc(printBool,[(arg(b),bool)],block([ifStat(id(b),block([echo(num(42))]),block([echo(num(0))]))]))),call(id(printBool),[app(id(lt),[num(0),num(1)])])]))

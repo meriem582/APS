@@ -1,0 +1,1 @@
+prog(block([echo(num(42))]))

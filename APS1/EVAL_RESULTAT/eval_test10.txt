@@ -1,1 +1,0 @@
-Erreur interne : f : Variable ou fonction non définie dans l'environnement

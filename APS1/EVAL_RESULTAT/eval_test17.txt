@@ -1,1 +1,0 @@
-Erreur interne : ECHO ne peut afficher que des entiers

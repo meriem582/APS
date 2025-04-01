@@ -1,0 +1,1 @@
+prog(block([cmds(const(x,int,num(24))),set(id(x),num(2)),echo(id(x))]))
