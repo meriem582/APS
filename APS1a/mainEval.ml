@@ -24,8 +24,13 @@ try
         Printf.printf "Erreur de syntaxe à la ligne %d, colonne %d\n" line cnum;
         exit 1
   in
-  let _ = eval_prog p in
+  let sortie = eval_prog p in
+  List.iter (function
+    | InZ n -> Printf.printf "%d\n" n
+    | _ -> ()
+  ) sortie;
   Printf.printf "Évaluation terminée avec succès.\n"
+
   
 with
 | Lexer.Eof -> Printf.printf "Erreur : fin de fichier inattendue.\n"

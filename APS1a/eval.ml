@@ -11,9 +11,9 @@ type valeur =
   | InF of expr * arg list * env  
   | InFR of expr * string * arg list * env 
   | InA of address 
-  | InP of cmds * arg list * env 
-  | InPR of cmds * string * arg list * env 
- 
+  | InP of cmds * argProc list * env 
+  | InPR of cmds * string * argProc list * env 
+
 
 and env = (string, valeur) Hashtbl.t
 
@@ -183,22 +183,45 @@ let rec eval_expr (env: env) (mem: memory) (e: expr) : valeur =
           | _ -> failwith "Condition WHILE doit être booléenne"
         in loop mem sortie
   
-    | ASTCall (p, args) ->
-        (match Hashtbl.find_opt env p with
-        | Some (InP (cmds, params, proc_env)) ->
-            let args_values = List.map (fun arg -> eval_expr env mem arg) args in
-            let new_env = Hashtbl.copy proc_env in
-            List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params args_values;
-            eval_block new_env mem (ASTBlock cmds) sortie
+        | ASTCall (p, actual_args) ->
+          (match Hashtbl.find_opt env p with
+          | Some (InP (cmds, formal_args, proc_env)) ->
+              let new_env = Hashtbl.copy proc_env in
   
-        | Some (InPR (cmds, rec_nom, params, proc_env)) ->
-            let args_values = List.map (fun arg -> eval_expr env mem arg) args in
-            let new_env = Hashtbl.copy proc_env in
-            List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params args_values;
-            Hashtbl.add new_env rec_nom (InPR (cmds, rec_nom, params, new_env));  
-            eval_block new_env mem (ASTBlock cmds) sortie
+              List.iter2 (fun formal actual ->
+                match formal, actual with
+                | ASTArgProc(name, _), ASTExpr e ->
+                    let v = eval_expr env mem e in
+                    Hashtbl.add new_env name v
+                | ASTArgProcVar(name, _), ASTExprProc id ->
+                    (match Hashtbl.find_opt env id with
+                     | Some (InA addr) -> Hashtbl.add new_env name (InA addr)
+                     | _ -> failwith ("CALL: " ^ id ^ " n'est pas une variable adressable"))
+                | _ -> failwith "CALL: arguments mal formés ou non compatibles avec les paramètres"
+              ) formal_args actual_args;
   
-        | _ -> failwith ("Procédure non définie: " ^ p))
+              eval_block new_env mem (ASTBlock cmds) sortie
+  
+          | Some (InPR (cmds, nom, formal_args, proc_env)) ->
+              let new_env = Hashtbl.copy proc_env in
+  
+              List.iter2 (fun formal actual ->
+                match formal, actual with
+                | ASTArgProc(name, _), ASTExpr e ->
+                    let v = eval_expr env mem e in
+                    Hashtbl.add new_env name v
+                | ASTArgProcVar(name, _), ASTExprProc id ->
+                    (match Hashtbl.find_opt env id with
+                     | Some (InA addr) -> Hashtbl.add new_env name (InA addr)
+                     | _ -> failwith ("CALL: " ^ id ^ " n'est pas une variable adressable"))
+                | _ -> failwith "CALL: arguments mal formés ou non compatibles avec les paramètres"
+              ) formal_args actual_args;
+  
+              Hashtbl.add new_env nom (InPR (cmds, nom, formal_args, new_env));
+              eval_block new_env mem (ASTBlock cmds) sortie
+  
+          | _ -> failwith ("CALL: Procédure non définie: " ^ p))
+  
 
 
         and eval_def (env: env) (mem: memory) (d: def) : env * memory =

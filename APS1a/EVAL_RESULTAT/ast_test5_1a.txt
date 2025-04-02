@@ -1,0 +1,1 @@
+Erreur interne : x est une constante ou une fonction, impossible de l'affecter
