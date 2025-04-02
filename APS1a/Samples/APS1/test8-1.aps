@@ -1,17 +1,18 @@
 [
-  VAR r int;
-  FUN le bool [x:int,y:int] (or (eq x y) (lt x y));
-  PROC REC loop [f: (int -> int), n:int]
+  VAR x int;
+  FUN le bool [x:int,y:int] 
+    (or (eq x y) (lt x y));
+  PROC REC p [f: (int -> int), n:int]
   [
       IF (eq n 0)
         [ 
-          ECHO r
+          ECHO x
         ]
 	      [
-	        SET r (add r 1);
-	        CALL loop f (sub n 1)
+	        SET x (add x 1);
+	        CALL p f (sub n 1)
 	      ]
   ];
-  SET r 21;
-  CALL loop [x:int](add x 1) 21
+  SET x 21;
+  CALL p [x:int](add x 1) x
 ]

@@ -1,0 +1,18 @@
+[
+    CONST s int 10;
+    CONST v (vec int) (alloc s);
+    VAR cpt int;
+    SET cpt 0;
+    WHILE (lt cpt s)
+    [
+        SET (nth v cpt) cpt;
+        SET cpt (add cpt 1)
+    ];
+    SET cpt 0;
+     WHILE (lt cpt s)
+    [
+        ECHO (nth v cpt);
+        SET cpt (add cpt 1)
+    ];
+    ECHO 0
+]

@@ -1,0 +1,1 @@
+prog(block([cmds(fun(f,int,[(x,int),(y,int)],app(id(add),[app(id(mul),[num(42),id(x)]),app(id(sub),[app(id(div),[id(y),num(2)]),num(42)])]))),echo(app(id(f),[num(1),num(100)]))]))

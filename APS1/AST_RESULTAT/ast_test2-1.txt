@@ -1,1 +1,1 @@
-prog(block([cmds(proc(printBool,[(b,bool)],block([ifStat(id(b),block([echo(num(42))]),block([echo(num(0))]))]))),call(id(printBool),[app(id(lt),[num(0),num(1)])])]))
+prog(block([cmds(proc(fb,[(b,bool)],block([ifStat(id(b),block([echo(num(1))]),block([echo(num(2))]))]))),call(id(fb),[app(id(lt),[num(0),num(1)])])]))

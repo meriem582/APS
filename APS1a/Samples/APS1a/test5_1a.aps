@@ -1,5 +1,6 @@
 [
-    CONST x int 24;
-    SET x 2;
-    ECHO x
+   FUN f int [x:bool] (if x 0 1);
+   VAR x int;
+   SET x f;
+   ECHO (add x (f true ))
 ]

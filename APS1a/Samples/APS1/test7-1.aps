@@ -1,18 +1,15 @@
 [
   VAR x int;
   SET x 0;
-  PROC p [n:int]
+  ECHO x;
+  PROC f [n:int]
     [
       VAR y int;
-      SET y (mul n 2);
+      SET y (sub n 12);
       SET x y
     ];
-  VAR z int;
-  SET z 24;
-  ECHO x;
   IF true
-    [ CALL p 21 ]
-    [ ECHO x ];
+    [ CALL f 30 ]
+    [ CALL f 50 ];
   ECHO x
-
 ]

@@ -1,0 +1,19 @@
+[
+    CONST v (vec int) (alloc 3);
+    SET (nth v 0) 1;
+    SET (nth v 1) 3;
+    SET (nth v 2) 2;
+    VAR m int;
+    SET m (nth v 0);
+    VAR i int;
+    SET i 1;
+    WHILE (lt i (len v)) [
+        IF (lt m (nth v i)) [
+            SET m (nth v i)
+        ][
+            ECHO 1
+        ];
+        SET i (add i 1)
+    ];
+    ECHO m
+]

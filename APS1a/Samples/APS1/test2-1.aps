@@ -1,7 +1,5 @@
 [
-  PROC printBool [b:bool]
-    [
-      IF b [ ECHO 42 ] [ ECHO 0 ]
-    ];
-  CALL printBool (lt 0 1)
+  PROC fb [b:bool]
+    [ IF b [ ECHO 1 ] [ ECHO 2 ] ];
+  CALL fb (lt 0 1)
 ]

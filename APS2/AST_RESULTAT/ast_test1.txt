@@ -1,0 +1,1 @@
+prog(block([cmds(funRec(pgcd,int,[(a,int),(b,int)],if(app(id(eq),[id(a),id(b)]),id(a),if(app(id(lt),[id(a),id(b)]),app(id(pgcd),[id(a),app(id(sub),[id(b),id(a)])]),app(id(pgcd),[app(id(sub),[id(a),id(b)]),id(b)]))))),echo(app(id(pgcd),[num(48),num(18)]))]))

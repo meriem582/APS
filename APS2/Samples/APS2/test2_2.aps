@@ -1,0 +1,32 @@
+[ 
+    CONST v1 (vec int) (alloc 12);
+    SET (nth v1 0) 0; 
+    SET (nth v1 1) 1; 
+    SET (nth v1 2) 2; 
+    SET (nth v1 3) 3;
+    SET (nth v1 4) 4;
+    SET (nth v1 5) 5;
+    SET (nth v1 6) 6;
+    SET (nth v1 7) 7;
+    SET (nth v1 8) 8;
+    SET (nth v1 9) 9;
+    SET (nth v1 10) 10;
+    SET (nth v1 11) 11;
+    CONST v2 (vec int) (alloc 12);
+    VAR i int; 
+
+    SET i 0; 
+    WHILE (lt i (len v1)) [ 
+        SET (nth v2 i) (nth v1 i); 
+        SET i (add i 1) 
+    ]; 
+
+    SET i 0; 
+    WHILE (lt i (len v2)) [ 
+        ECHO (nth v2 i); 
+        SET i (add i 1) 
+    ]; 
+  
+    ECHO 0
+
+]

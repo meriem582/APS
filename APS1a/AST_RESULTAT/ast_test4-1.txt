@@ -1,1 +1,1 @@
-prog(block([cmds(var(x,int)),set(id(x),num(22)),echo(id(x))]))
+prog(block([cmds(var(x,int)),set(id(x),num(15)),echo(id(x))]))

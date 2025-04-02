@@ -1,0 +1,1 @@
+prog(block([cmds(const(v,vec(int),alloc(num(10)))),cmds(var(i,int)),set(id(i),num(0)),while(app(id(lt),[id(i),len(id(v))]),block([set(lvalNth(id(v),id(i)),id(i)),set(id(i),app(id(add),[id(i),num(1)]))])),set(id(i),num(0)),while(app(id(lt),[id(i),len(id(v))]),block([echo(nth(id(v),id(i))),set(id(i),app(id(add),[id(i),num(1)]))]))]))
