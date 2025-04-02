@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),set(id(x),num(3)),cmds(proc(process,[(argVar(n),int)],block([ifStat(app(id(lt),[id(n),num(10)]),block([while(app(id(lt),[id(n),num(10)]),block([set(id(n),app(id(add),[id(n),num(1)]))])),echo(id(n))]),block([echo(num(5))]))]))),call(id(process),[exprProc(x)])]))
