@@ -1,0 +1,15 @@
+[
+  VAR x int;
+  SET x 0;
+  ECHO x;
+  PROC f [n:int]
+    [
+      VAR y int;
+      SET y (sub n 12);
+      SET x y
+    ];
+  IF true
+    [ CALL f 30 ]
+    [ CALL f 50 ];
+  ECHO x
+]

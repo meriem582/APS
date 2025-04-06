@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),set(id(x),num(15)),echo(id(x))]))

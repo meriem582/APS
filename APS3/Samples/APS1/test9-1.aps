@@ -1,0 +1,5 @@
+[
+    CONST x int 42;
+    SET x 5;
+    ECHO x
+]

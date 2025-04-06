@@ -1,0 +1,1 @@
+prog(block([cmds(var(t,vec(int))),set(id(t),alloc(num(3))),set(lvalNth(id(t),num(0)),num(0)),set(lvalNth(id(t),num(1)),num(1)),set(lvalNth(id(t),num(2)),num(2)),echo(app(id(add),[nth(id(t),nth(id(t),num(0))),nth(vset(id(t),num(0),num(3)),num(2))]))]))

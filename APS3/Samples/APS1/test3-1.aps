@@ -1,0 +1,12 @@
+[
+    VAR cpt int;
+    SET cpt 10;
+    VAR s int;
+    SET s 0;
+    WHILE (lt 0 cpt)
+        [
+            SET s (add s cpt);
+            SET cpt (sub cpt 1)
+        ];
+    ECHO s
+]

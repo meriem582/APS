@@ -1,0 +1,1 @@
+prog(block([cmds(const(x,int,num(24))),cmds(fun(f,int,[(y,int)],app(id(add),[id(y),num(1)]))),echo(app(id(f),[id(x)]))]))

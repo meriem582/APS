@@ -1,0 +1,1 @@
+prog(block([cmds(funRec(fib,int,[(n,int)],if(app(id(lt),[id(n),num(2)]),id(n),app(id(add),[app(id(fib),[app(id(sub),[id(n),num(1)])]),app(id(fib),[app(id(sub),[id(n),num(2)])])])))),echo(app(id(fib),[num(10)]))]))

@@ -1,11 +1,9 @@
-# 🚀 Projet APS0 - Analyse et Sémantique des Programmes
-
-## 📁 Structure du projet partie APS0
+## 📁 Structure du projet partie APS1
 
 - **ast.ml** : Structures abstraites du programme.
 - **lexer.mll** : Analyse lexicale (OCamllex).
 - **parser.mly** : Analyse syntaxique (Ocamlyacc).
-- **prologTerm.ml** : Génération des termes Prolog.
+- **prologterm.ml** : Génération des termes Prolog.
 - **eval.ml** : Évaluation des programmes.
 - **mainTyper.ml** : Analyse du typage.
 - **mainEval.ml** : Évaluation des programmes.
@@ -21,7 +19,7 @@
 ### 🔍 Analyse du typage :
 
 ```bash
-./compileTyper.sh [fichier.aps]
+./compileTyper.sh [Samples/APS1/fichier.aps]
 ```
 ### Où bien : (Pour lancer l'analyse du typage sur tout les fichiers aps dans le répertoire Samples)
 
@@ -34,7 +32,7 @@
 ### 📊 Évaluation des programmes :
 
 ```bash
-./compileEval.sh [fichier.aps]
+./compileEval.sh [Samples/APS1/fichier.aps]
 ```
 ### Où bien : (Pour lancer l'évaluation des programmes sur tout les fichiers aps dans le répertoire Samples)
 
@@ -57,11 +55,11 @@
 
 ## 📌 Exemple d'utilisation
 
-1. Placez vos fichiers APS0 dans le dossier `Samples/`.
+1. Placez vos fichiers APS1 dans le dossier `Samples/APS1`.
 2. Lancez :
 
 ```bash
-./compileTyper.sh ./Samples/test1.aps
+./compileTyper.sh Samples/APS1/test1-1.aps
 ```
 
 3. Consultez le résultat dans `AST_RESULTAT/`.
@@ -70,5 +68,5 @@
 
 En cas de problèmes :
 
-- Vérifiez la présence des fichiers APS0 dans `Samples/`.
+- Vérifiez la présence des fichiers APS1 dans `Samples/APS1`.
 - Assurez-vous que OCaml et SWI-Prolog sont installés.

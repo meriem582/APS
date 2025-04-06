@@ -1,5 +1,3 @@
-# 🚀 Projet APS0 - Analyse et Sémantique des Programmes
-
 ## 📁 Structure du projet partie APS0
 
 - **ast.ml** : Structures abstraites du programme.

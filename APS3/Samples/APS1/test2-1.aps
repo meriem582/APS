@@ -1,0 +1,5 @@
+[
+  PROC fb [b:bool]
+    [ IF b [ ECHO 1 ] [ ECHO 2 ] ];
+  CALL fb (lt 0 1)
+]

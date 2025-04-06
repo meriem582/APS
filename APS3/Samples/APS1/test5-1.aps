@@ -1,0 +1,6 @@
+[
+  CONST x int 0;
+  IF (eq x 1)
+    [ ECHO (sub x 1) ]
+    [ ECHO x ]
+]

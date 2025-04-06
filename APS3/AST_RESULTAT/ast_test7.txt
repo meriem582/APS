@@ -1,0 +1,1 @@
+prog(block([echo(and(id(true),id(false)))]))

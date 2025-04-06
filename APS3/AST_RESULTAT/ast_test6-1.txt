@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),set(id(x),num(42)),cmds(var(y,int)),set(id(y),num(24)),ifStat(app(id(eq),[id(x),num(24)]),block([set(id(y),id(x))]),block([set(id(x),id(y))])),echo(id(y)),echo(id(x)),set(id(x),num(42)),ifStat(app(id(eq),[id(x),num(42)]),block([set(id(y),id(x))]),block([set(id(x),id(y))])),echo(id(y)),echo(id(x))]))

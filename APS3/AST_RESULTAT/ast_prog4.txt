@@ -1,0 +1,1 @@
+prog(block([echo(app(id(add),[app(id(mul),[num(42),id(x)]),app(id(sub),[app(id(div),[id(y),num(2)]),num(42)])]))]))

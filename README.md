@@ -13,11 +13,22 @@ Chaque étape (APS0, APS1, APS1a, APS2, APS3) dispose de son propre répertoire 
 
 ```
 ├── APS0/
+│    ├── AST_RESULTAT/
+│    |   ├── ...
+│    ├── EVAL_RESULTAT/
+│    |   ├── ...
+│    ├── Samples/
+│    |   ├── ...
 │    ├── ast.ml
+│    ├── clean.sh
+│    ├── compileEval.sh
+│    ├── compileTyper.sh
+│    ├── eval.ml
 │    ├── lexer.mll
-│    ├── parser.mly
-│    ├── mainTyper.ml
 │    ├── mainEval.ml
+│    ├── mainTyper.ml
+│    ├── parser.mly
+│    ├── prologterm.ml
 │    ├── typer.pl
 │    ├── compileTyper.sh
 │    ├── compileEval.sh

@@ -1,4 +1,4 @@
-## 📁 Structure du projet partie APS2
+## 📁 Structure du projet partie APS3
 
 - **ast.ml** : Structures abstraites du programme.
 - **lexer.mll** : Analyse lexicale (OCamllex).
@@ -19,7 +19,7 @@
 ### 🔍 Analyse du typage :
 
 ```bash
-./compileTyper.sh [Samples/APS2/fichier.aps]
+./compileTyper.sh [Samples/APS3/fichier.aps]
 ```
 ### Où bien : (Pour lancer l'analyse du typage sur tout les fichiers aps dans le répertoire Samples)
 
@@ -32,7 +32,7 @@
 ### 📊 Évaluation des programmes :
 
 ```bash
-./compileEval.sh [Samples/APS2/fichier.aps]
+./compileEval.sh [Samples/APS3/fichier.aps]
 ```
 ### Où bien : (Pour lancer l'évaluation des programmes sur tout les fichiers aps dans le répertoire Samples)
 
@@ -55,11 +55,11 @@
 
 ## 📌 Exemple d'utilisation
 
-1. Placez vos fichiers APS2 dans le dossier `Samples/APS2`.
+1. Placez vos fichiers APS3 dans le dossier `Samples/APS3`.
 2. Lancez :
 
 ```bash
-./compileTyper.sh Samples/APS2/test1_2.aps
+./compileTyper.sh Samples/APS3/test1_3.aps
 ```
 
 3. Consultez le résultat dans `AST_RESULTAT/`.
@@ -68,5 +68,5 @@
 
 En cas de problèmes :
 
-- Vérifiez la présence des fichiers APS2 dans `Samples/APS2`.
+- Vérifiez la présence des fichiers APS3 dans `Samples/APS3`.
 - Assurez-vous que OCaml et SWI-Prolog sont installés.

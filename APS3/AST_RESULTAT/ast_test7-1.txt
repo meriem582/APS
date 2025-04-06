@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),set(id(x),num(0)),echo(id(x)),cmds(proc(f,[(arg(n),int)],block([cmds(var(y,int)),set(id(y),app(id(sub),[id(n),num(12)])),set(id(x),id(y))]))),ifStat(id(true),block([call(id(f),[num(30)])]),block([call(id(f),[num(50)])])),echo(id(x))]))

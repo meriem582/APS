@@ -1,0 +1,17 @@
+[
+  VAR x int;
+  SET x 42;
+  VAR y int;
+  SET y 24;
+  IF (eq x 24)
+    [ SET y x ]
+    [ SET x y ];
+  ECHO y;
+  ECHO x;
+  SET x 42;
+  IF (eq x 42)
+    [ SET y x ]
+    [ SET x y ];
+  ECHO y;
+  ECHO x
+]
