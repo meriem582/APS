@@ -1,0 +1,1 @@
+prog(block([cmds(const(size,int,num(5))),cmds(const(v,vec(int),alloc(id(size)))),return(len(id(v)))]))

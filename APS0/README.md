@@ -16,6 +16,18 @@
 
 ## ▶️ Compilation et Exécution
 
+### 🔍Exécution d'interpréteur:
+
+```bash
+./compileAst.sh [fichier.aps]
+```
+### Où bien : (Pour lancer l'exécution d'interpréteur sur tout les fichiers aps dans le répertoire Samples)
+
+```bash
+./compileAst.sh
+```
+- Les AST sont enregistrés dans `AST_RESULTAT/`.
+
 ### 🔍 Analyse du typage :
 
 ```bash
@@ -27,7 +39,7 @@
 ./compileTyper.sh
 ```
 
-- Les AST sont enregistrés dans `AST_RESULTAT/`.
+- Le résultat de l'analyse de typage sont enregistrés dans `TYPAGE_RESULTAT/`.
 
 ### 📊 Évaluation des programmes :
 
@@ -51,18 +63,43 @@
 ## 📂 Organisation des résultats
 
 - **AST_RESULTAT/** : AST des programmes.
+- **TYPAGE_RESULTAT/** : AST des programmes.
 - **EVAL_RESULTAT/** : Résultat de l'évaluation.
 
 ## 📌 Exemple d'utilisation
+
+### ▶️ Ast :
 
 1. Placez vos fichiers APS0 dans le dossier `Samples/`.
 2. Lancez :
 
 ```bash
-./compileTyper.sh ./Samples/test1.aps
+./compileAst.sh Samples/test1.aps
 ```
 
 3. Consultez le résultat dans `AST_RESULTAT/`.
+
+### ▶️ Typer :
+
+1. Placez vos fichiers APS0 dans le dossier `Samples/`.
+2. Lancez :
+
+```bash
+./compileTyper.sh Samples/test1.aps
+```
+
+3. Consultez le résultat dans `TYPAGE_RESULTAT/`.
+
+### ▶️ Evaluateur :
+
+1. Placez vos fichiers APS0 dans le dossier `Samples/`.
+2. Lancez :
+
+```bash
+./compileEval.sh Samples/test1.aps
+```
+
+3. Consultez le résultat dans `EVAL_RESULTAT/`.
 
 ## 📣 Remarque
 

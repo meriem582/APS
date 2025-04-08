@@ -40,7 +40,7 @@ if [ "$#" -gt 0 ]; then
     for file in "$@"; do
         if [ -f "$file" ]; then
             filename=$(basename -- "$file")
-            output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/
+            output_file="$output_dir/eval_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/
             
             echo "📄 Traitement du fichier : $file"
             echo " "
@@ -66,7 +66,7 @@ else
         if [ -f "$file" ]; then
             found=1
             filename=$(basename -- "$file")
-            output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/            
+            output_file="$output_dir/eval_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/            
             echo "📄 Traitement du fichier : $file"
             echo " "
             ./mainEval "$file" | tee "$output_file"

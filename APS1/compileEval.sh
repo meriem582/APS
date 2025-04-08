@@ -35,7 +35,7 @@ execute_file() {
     local file="$1"
     if [ -f "$file" ]; then
         filename=$(basename -- "$file")
-        output_file="$output_dir/ast_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/
+        output_file="$output_dir/eval_${filename%.*}.txt"  # Stocker dans EVAL_RESULTAT/
         
         echo "📄 Traitement du fichier : $file"
         echo " "

@@ -1,0 +1,5 @@
+[
+  CONST size int 5;
+  CONST v (vec int) (alloc size);
+  RETURN (len v)
+]

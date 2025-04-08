@@ -19,8 +19,11 @@ Chaque étape (APS0, APS1, APS1a, APS2, APS3) dispose de son propre répertoire 
 │    |   ├── ...
 │    ├── Samples/
 │    |   ├── ...
+│    ├── TYPAGE_RESULTAT/
+│    |   ├── ...
 │    ├── ast.ml
 │    ├── clean.sh
+│    ├── compileAst.sh
 │    ├── compileEval.sh
 │    ├── compileTyper.sh
 │    ├── eval.ml
@@ -29,10 +32,8 @@ Chaque étape (APS0, APS1, APS1a, APS2, APS3) dispose de son propre répertoire 
 │    ├── mainTyper.ml
 │    ├── parser.mly
 │    ├── prologterm.ml
-│    ├── typer.pl
-│    ├── compileTyper.sh
-│    ├── compileEval.sh
-│    └── Samples/
+│    ├── README.md
+│    └── typer.pl
 ├── APS1/
 │    ├── ...
 ├── APS1a/
@@ -59,11 +60,23 @@ swipl --version
 
 ## ▶️ Compilation et Exécution
 
-Chaque partie du projet dispose de scripts pour automatiser la compilation et l'exécution.
+Chaque partie du projet dispose de scripts pour automatiser la compilation et l'exécution(Voir readme.md de chaque partie).
+
+### 🔍 Exécuter l'interpréte :
+
+1. Allez dans le répertoire souhaité (par exemple APS0) :
+
+```bash
+cd APS0
+./compileAst.sh [fichier.aps]
+```
+
+- Si aucun fichier n'est fourni, tous les fichiers `.aps` du dossier `Samples/` seront traités.
+- Les AST sont enregistrés dans `AST_RESULTAT/`.
 
 ### 🔍 Exécuter l'analyse du typage :
 
-1. Allez dans le répertoire souhaité (par exemple APS0) :
+1. Allez dans le répertoire souhaité :
 
 ```bash
 cd APS0
@@ -71,7 +84,7 @@ cd APS0
 ```
 
 - Si aucun fichier n'est fourni, tous les fichiers `.aps` du dossier `Samples/` seront traités.
-- Les AST sont enregistrés dans `AST_RESULTAT/`.
+- Les résultats du typage sont enregistrés dans `TYPAGE_RESULTAT/`.
 
 ### 📊 Exécuter l'évaluation :
 
@@ -96,6 +109,7 @@ Chaque partie inclut un script de nettoyage :
 
 - **AST_RESULTAT/** : Arbres syntaxiques abstraits (AST).
 - **EVAL_RESULTAT/** : Résultats de l'évaluation des programmes.
+- **TYPAGE_RESULTAT/** : Résultats du typage des programmes.
 
 ## 📌 Exemple d'utilisation
 
@@ -110,7 +124,7 @@ cd APS0
 ./compileEval.sh Samples/exemple.aps
 ```
 
-3. Consultez les résultats dans `AST_RESULTAT/` et `EVAL_RESULTAT/`.
+3. Consultez les résultats dans `AST_RESULTAT/`, `EVAL_RESULTAT/` et `TYPAGE_RESULTAT/`.
 
 ## 📣 Remarques
 
@@ -118,4 +132,3 @@ cd APS0
 - En cas d'erreur, vérifiez l'installation d'OCaml et SWI-Prolog.
 
 👨‍💻 Projet réalisé pour le cours **MU4IN503 - Analyse des Programmes et Sémantique**.
-

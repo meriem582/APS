@@ -1,0 +1,10 @@
+[
+  VAR x int;
+  SET x 0;
+  WHILE (lt x 10) [
+    IF (eq x 5)
+      [ RETURN true ]
+      [ SET x (add x 1) ]
+  ];
+  RETURN false
+]

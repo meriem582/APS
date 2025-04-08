@@ -1,1 +1,1 @@
-prog(block([return(num(42))]))
+prog(block([cmds(const(x,int,num(23))),return(id(x))]))

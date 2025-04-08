@@ -59,7 +59,6 @@ typ:
   | INT { BaseType TInt }
   | BOOL { BaseType TBool }
   | VOID { BaseType TVoid }
-  | LPAR types ARROW typ RPAR { ASTArrow($2, $4) }
   | LPAR VEC typ RPAR { ASTVec($3) }
   | LPAR types ARROW typ RPAR { ASTArrow($2, $4) }
 ;

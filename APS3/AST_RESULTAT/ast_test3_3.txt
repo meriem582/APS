@@ -1,0 +1,1 @@
+prog(block([cmds(var(x,int)),set(id(x),num(0)),ifStat(app(id(eq),[id(x),num(0)]),block([return(num(1))]),block([set(id(x),app(id(add),[id(x),num(1)]))])),return(num(0))]))

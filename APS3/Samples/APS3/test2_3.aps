@@ -1,0 +1,5 @@
+[
+  IF (eq 1 1)
+    [ RETURN 42 ]
+    [ RETURN 0 ]
+]

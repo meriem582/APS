@@ -1,0 +1,2 @@
+Résultat: ❌ Erreur de typage !!!
+Typage terminée avec échec.

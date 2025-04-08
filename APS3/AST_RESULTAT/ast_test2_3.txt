@@ -1,0 +1,1 @@
+prog(block([ifStat(app(id(eq),[num(1),num(1)]),block([return(num(42))]),block([return(num(0))]))]))
