@@ -1,0 +1,2 @@
+Résultat: ✅ Bien typé
+Typage terminée avec succès.

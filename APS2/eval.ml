@@ -1,270 +1,363 @@
 open Ast
 
-(* Définition de la mémoire : adresse vers valeur entière *)
+(* Types de base pour APS2 *)
 type address = int
-let nextAddress = ref 0 
 
+and valeur =
+  | InZ of int
+  | InB of address * int
+  | InA of address
+  | InF of expr * arg list * env
+  | InFR of expr * string * arg list * env
+  | InP of cmds * argProc list * env
+  | InPR of cmds * string * argProc list * env
 
-(* Type des valeurs *)
-type valeur =
-  | InZ of int  
-  | InF of expr * arg list * env  
-  | InFR of expr * string * arg list * env 
-  | InA of address 
-  | InP of cmds * arg list * env 
-  | InPR of cmds * string * arg list * env 
- 
 
 and env = (string, valeur) Hashtbl.t
+and memory = (address, valeur option) Hashtbl.t
+and sortie = valeur list
+
+let next_address = ref 0
+
+let alloc (mem : memory) : address =
+  let addr = !next_address in
+  incr next_address;
+  Hashtbl.add mem addr None;
+  addr
+
+(*cette fonction permet de générer une liste d'entiers de start à stop-1*)
+(*elle va nous servir pour générer une liste d'adresses*)
+let rec gen_range start stop =
+  if start >= stop then [] else start :: gen_range (start + 1) stop
 
 
-type memory = (address, int option) Hashtbl.t
-module Memory = Hashtbl
-
-
-
-(*Fonction pour allouer une adresse en mémoire*)
-
-let alloc mem =
-  let a = !nextAddress in
-  nextAddress := a + 1;
-  Hashtbl.add mem a None;
-  a
-
-(* Fonction pour modifier la valeur d'une adresse en mémoire *)
-let store mem addr v =
-  if Memory.mem mem addr then 
-    Memory.replace mem addr (Some v)
+(*cette fonction va nous permettre de trouver un bloc libre dans la mémoire*)
+let rec find_free_block mem size from limit =
+  if from + size > limit then failwith "Out of memory"
   else
-    failwith "Modification mémoire invalide : adresse non allouée"
+    let block = gen_range from (from + size) in
+    if List.for_all (fun a -> not (Hashtbl.mem mem a)) block then from
+    else find_free_block mem size (from + 1) limit
 
+(*cette fonction va allouer un bloc de mémoire de taille size*)
+let allocn mem size =
+  let limit = 10000 in
+  let base = find_free_block mem size !next_address limit in
+  for i = 0 to size - 1 do Hashtbl.add mem (base + i) None done;
+  next_address := base + size;
+  base, mem
 
-(* Fonction de lecture mémoire *)
+let store mem addr v =
+  match v with
+  | InZ _ | InB _ ->
+      if Hashtbl.mem mem addr then Hashtbl.replace mem addr (Some v)
+      else failwith "Adresse non allouée"
+  | _ -> failwith "Mémoire ne stocke que des InZ/InB"
+
 let load mem addr =
-  try Memory.find mem addr
-  with Not_found -> failwith "Accès mémoire invalide"
+  match Hashtbl.find_opt mem addr with
+  | Some (Some v) -> v
+  | Some None -> failwith "Valeur non initialisée"
+  | None -> failwith "Adresse non allouée"
 
-let isBool b= 
-  match b with
-  | "true" -> true
-  | "false" -> true
+let is_bool = function "true" | "false" -> true | _ -> false
+
+let eval_bool = function "true" -> InZ 1 | "false" -> InZ 0 | _ -> failwith "bool invalide"
+
+let est_primitive = function
+  | ASTId s -> List.mem s ["add"; "sub"; "mul"; "div"; "eq"; "lt"; "not"]
   | _ -> false
 
-type sortie = valeur list
-
-let est_primitive prim =
-    match prim with
-    | ASTId("not") -> true
-    | ASTId("add") -> true
-    | ASTId("mul") -> true
-    | ASTId("sub") -> true
-    | ASTId("div") -> true
-    | ASTId("eq") -> true
-    | ASTId("lt") -> true
-    | ASTId("true") -> true
-    | ASTId("false") -> true
-    | _ -> false
-
-(* Évaluer les primitives *)
 let eval_primitive prim args =
   match prim, args with
-  | ASTId("add"), [InZ x; InZ y] -> InZ (x + y)
-  | ASTId("sub"), [InZ x; InZ y] -> InZ (x - y)
-  | ASTId("mul"), [InZ x; InZ y] -> InZ (x * y)
-  | ASTId("div"), [InZ x; InZ y] when y <> 0 -> InZ (x / y)
-  | ASTId("lt"), [InZ x; InZ y] -> InZ ( if x<y then 1 else 0)
-  | ASTId("eq"), [InZ x; InZ y] -> InZ ( if x=y then 1 else 0)
-  | ASTId("not"), [InZ b] -> InZ (if b=0 then 1 else 0)
-  | _ -> failwith "Erreur d'évaluation de la primitive"
+  | ASTId "add", [InZ a; InZ b] -> InZ (a + b)
+  | ASTId "sub", [InZ a; InZ b] -> InZ (a - b)
+  | ASTId "mul", [InZ a; InZ b] -> InZ (a * b)
+  | ASTId "div", [InZ a; InZ b] -> if b = 0 then failwith "Div/0" else InZ (a / b)
+  | ASTId "eq",  [InZ a; InZ b] -> InZ (if a = b then 1 else 0)
+  | ASTId "lt",  [InZ a; InZ b] -> InZ (if a < b then 1 else 0)
+  | ASTId "not", [InZ a] -> InZ (if a = 0 then 1 else 0)
+  | _ -> failwith "primitive mal typée"
 
-let evaluationBool b =
-  match b with 
-  | "true" -> InZ 1 
-  | "false" -> InZ 0
-  |_ -> failwith ("Pas bool")
-
-(* Évaluation des expressions *)
-
-let rec eval_expr (env: env) (mem: memory) (e: expr) : valeur =
-  match e with
-  | ASTNum n -> InZ n 
-
-  | ASTId x ->
-      if isBool x then evaluationBool x
-      else
-        (match Hashtbl.find_opt env x with
-         | Some (InA addr) ->  (* Si c'est une variable, on récupère la valeur en mémoire *)
-             (match Hashtbl.find_opt mem addr with
-              | Some (Some v) -> InZ v
-              | Some None -> failwith (x ^ " : Variable non initialisée")
-              | None -> failwith (x ^ " : Adresse non allouée"))
-         | Some v -> v  (* Si c'est une constante, fonction ou procédure, on la retourne directement *)
-         | None -> failwith (x ^ " : Variable ou fonction non définie dans l'environnement"))
-
-  | ASTIf (cond, e1, e2) -> (
-      match eval_expr env mem cond with
-      | InZ 0 -> eval_expr env mem e2
-      | InZ _ -> eval_expr env mem e1
-      | _ -> failwith "Condition IF doit être booléenne"
-    )
-
-  | ASTAnd (e1, e2) -> (
-      match eval_expr env mem e1 with
-      | InZ 0 -> InZ 0
-      | InZ _ -> eval_expr env mem e2
-      | _ -> failwith "Les opérateurs AND doivent être booléens"
-    )
-
-  | ASTOr (e1, e2) -> (
-      match eval_expr env mem e1 with
-      | InZ 0 -> eval_expr env mem e2
-      | InZ _ -> InZ 1
-      | _ -> failwith "Les opérateurs OR doivent être booléens"
-    )
-
-  | ASTLambda (params, body) -> InF (body, params, env) 
-
-  | ASTApp (func, args) ->
-      let args_values = List.map (fun arg -> eval_expr env mem arg) args in
-      if est_primitive func then eval_primitive func args_values
-      else
-        let func_value = eval_expr env mem func in
-        match func_value with
-        | InF (body, params, closure_env) -> 
-            (* Création d'un nouvel environnement avec les arguments *)
-            let new_env = Hashtbl.copy closure_env in
-            List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params args_values;
-            eval_expr new_env mem body
-        | InFR (body, name, params, closure_env) ->
-            (* Environnement récursif pour l'auto-référence *)
-            let rec_env = Hashtbl.copy closure_env in
-            Hashtbl.add rec_env name (InFR (body, name, params, rec_env));
-            List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add rec_env x v) params args_values;
-            eval_expr rec_env mem body
-        | _ -> failwith "Appel de fonction invalide"
-
-  (*Evaluation d'une instruction*)
-
-
-  and eval_stat (env: env) (mem: memory) (s: stat) (sortie: sortie) : memory * sortie =
-    match s with
-    | ASTEcho expr ->
-        let result = eval_expr env mem expr in
-        (match result with
-        | InZ n -> (mem, InZ n :: sortie) 
-        | _ -> failwith "ECHO ne peut afficher que des entiers")
+  let rec eval_expr env mem e =
+    match e with
+    | ASTNum n -> (InZ n, mem)
+    | ASTId x when is_bool x -> (eval_bool x, mem)
+    | ASTId x -> (
+        match Hashtbl.find_opt env x with
+        | Some (InA a) -> (load mem a, mem)
+        | Some v -> (v, mem)
+        | None -> failwith (x ^ " non défini")
+      )
   
-    | ASTSet (x, e) ->
-        let v = eval_expr env mem e in
-        (match Hashtbl.find_opt env x with
-          | Some (InA addr) ->  (* Si c'est une variable, on met à jour sa valeur en mémoire *)
+    | ASTIf (cond, et, ef) ->
+        let (vc, m1) = eval_expr env mem cond in
+        (match vc with
+         | InZ 0 -> eval_expr env m1 ef
+         | InZ _ -> eval_expr env m1 et
+         | _ -> failwith "IF : condition non booléenne")
+  
+    | ASTAnd (e1, e2) ->
+        let (v1, m1) = eval_expr env mem e1 in
+        (match v1 with
+         | InZ 0 -> (InZ 0, m1)
+         | InZ _ -> eval_expr env m1 e2
+         | _ -> failwith "AND : opérande non booléen")
+  
+    | ASTOr (e1, e2) ->
+        let (v1, m1) = eval_expr env mem e1 in
+        (match v1 with
+         | InZ 0 -> eval_expr env m1 e2
+         | InZ _ -> (InZ 1, m1)
+         | _ -> failwith "OR : opérande non booléen")
+  
+    | ASTAlloc e1 ->
+        let (v1, m1) = eval_expr env mem e1 in
+        (match v1 with
+         | InZ n ->
+             let (base, m2) = allocn m1 n in
+             (InB (base, n), m2)
+         | _ -> failwith "Alloc : taille non entière")
+  
+    | ASTVset (e1, e2, e3) ->
+        let (v1, m1) = eval_expr env mem e1 in
+        (match v1 with
+         | InB (base, size) ->
+             let (v2, m2) = eval_expr env m1 e2 in
+             let (v3, m3) = eval_expr env m2 e3 in
+             (match v2 with
+              | InZ idx ->
+                  if idx < 0 || idx >= size then (
+                    failwith "Index hors limites"
+                  );
+                  store m3 (base + idx) v3;
+                  (v1, m3)
+              | _ -> failwith "vset : index non entier")
+         | _ -> failwith "vset : e1 n est pas un bloc mémoire")
+  
+    | ASTLen e1 ->
+        let (v1, m1) = eval_expr env mem e1 in
+        (match v1 with
+         | InB (_, size) -> (InZ size, m1)
+         | _ -> failwith "len : e1 n est pas un bloc mémoire")
+  
+    | ASTNth (e1, e2) ->
+        let (v1, m1) = eval_expr env mem e1 in
+        let (v2, m2) = eval_expr env m1 e2 in
+        (match v1, v2 with
+         | InB (base, size), InZ idx ->
+             if idx < 0 || idx >= size then (
+               failwith "Index hors limites"
+             );
+             (load m2 (base + idx), m2)
+         | _ -> failwith "nth : types invalides")
+  
+    | ASTLambda (params, body) ->
+        (InF (body, params, env), mem)
+  
+    | ASTApp (f, args) ->
+          let rec eval_args acc mem args =
+            match args with
+            | [] -> (List.rev acc, mem)
+            | e :: rest ->
+                let (v, m') = eval_expr env mem e in
+                eval_args (v :: acc) m' rest
+          in
+          let (arg_vals, m1) = eval_args [] mem args in
+          if est_primitive f then
+            (eval_primitive f arg_vals, m1)
+          else
+            let (vf, m2) = eval_expr env m1 f in
+            match vf with
+            | InF (body, params, closure) ->
+                let new_env = Hashtbl.copy closure in
+                List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params arg_vals;
+                eval_expr new_env m2 body
+            | InFR (body, name, params, closure) ->
+                let rec_env = Hashtbl.copy closure in
+                let self = InFR (body, name, params, rec_env) in
+                Hashtbl.add rec_env name self;
+                List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add rec_env x v) params arg_vals;
+                eval_expr rec_env m2 body
+            | _ -> failwith "Appel invalide : fonction non trouvée"      
+  
+(* Evaluation d'une variable ou d'un tableau *)
+and eval_lval (env : env) (mem : memory) (lv : lval) : address * memory =
+  match lv with
+  | ASTLvalIdent x -> (
+      match Hashtbl.find_opt env x with
+      | Some (InA addr) -> (addr, mem)
+      | _ -> failwith (x ^ " : Variable non assignable"))
+
+  | ASTLvalNth (ASTLvalIdent x, idx_expr) -> (
+      match Hashtbl.find_opt env x with
+      | Some (InB (base, size)) ->  (* x est directement un vecteur *)
+          let (idx, mem1) = eval_expr env mem idx_expr in
+          (match idx with
+            | InZ i when i >= 0 && i < size -> (base + i, mem1)
+            | _ -> failwith (x ^ " : Index invalide dans tableau"))
+
+      | Some (InA addr) ->          (* x est une variable contenant un bloc *)
+          (match Hashtbl.find_opt mem addr with
+           | Some (Some (InB (base, size))) ->
+               let (idx, mem1) = eval_expr env mem idx_expr in
+               (match idx with
+                | InZ i when i >= 0 && i < size -> (base + i, mem1)
+                | _ -> failwith (x ^ " : Index invalide dans tableau"))
+           | Some _ -> failwith (x ^ " : La variable ne contient pas un bloc")
+           | None -> failwith (x ^ " : Adresse non allouée"))
+           
+      | _ -> failwith (x ^ " : Variable non trouvée dans l’environnement"))
+
+  | ASTLvalNth (lv1, idx_expr) ->
+      let (a1, mem1) = eval_lval env mem lv1 in
+      (match Hashtbl.find_opt mem1 a1 with
+       | Some (Some(InB (base, size))) ->
+           let (idx, mem2) = eval_expr env mem1 idx_expr in
+           (match idx with
+            | InZ i when i >= 0 && i < size -> (base + i, mem2)
+            | _ -> failwith "Index invalide dans tableau imbriqué")
+       | _ -> failwith "Mémoire ne contient pas un bloc")
+
+(* Evaluation d'une expression ou d'une procédure *)
+  and eval_exprProc env mem ep =
+    match ep with
+      | ASTExpr e -> eval_expr env mem e
+      | ASTExprProc id -> (
+          match Hashtbl.find_opt env id with
+            | Some (InA addr) -> (InA addr, mem)
+            | _ -> failwith (id ^ " : attendu une variable (adresse)")
+          )
+   
+  (* Evaluation d'une instruction *)
+  and eval_stat (env : env) (mem : memory) (s : stat) (out : sortie) : memory * sortie =
+        match s with
+        | ASTEcho e ->
+            let (v, mem1) = eval_expr env mem e in
             (match v with
-              | InZ n -> 
-                store mem addr n;  
-                (mem, sortie) 
-              | _ -> failwith "SET ne peut affecter que des entiers")
-          | Some _ -> failwith (x ^ " est une constante ou une fonction, impossible de l'affecter")
-          | None -> failwith (x ^ " : Variable non définie dans l'environnement"))      
-    
-    | ASTIfStat (cond, block1, block2) ->
-        let cond_value = eval_expr env mem cond in
-        (match cond_value with
-        | InZ 1 -> eval_block env mem block1 sortie
-        | InZ 0 -> eval_block env mem block2 sortie
-        | _ -> failwith "Condition IF doit être booléenne")
-  
-    | ASTWhile (cond, block) ->
-        let rec loop mem sortie =
-          match eval_expr env mem cond with
-          | InZ 1 ->
-              let new_mem, new_sortie = eval_block env mem block sortie in
-              loop new_mem new_sortie
-          | InZ 0 -> (mem, sortie) 
-          | _ -> failwith "Condition WHILE doit être booléenne"
-        in loop mem sortie
-  
-    | ASTCall (p, args) ->
-        (match Hashtbl.find_opt env p with
-        | Some (InP (cmds, params, proc_env)) ->
-            let args_values = List.map (fun arg -> eval_expr env mem arg) args in
-            let new_env = Hashtbl.copy proc_env in
-            List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params args_values;
-            eval_block new_env mem (ASTBlock cmds) sortie
-  
-        | Some (InPR (cmds, rec_nom, params, proc_env)) ->
-            let args_values = List.map (fun arg -> eval_expr env mem arg) args in
-            let new_env = Hashtbl.copy proc_env in
-            List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params args_values;
-            Hashtbl.add new_env rec_nom (InPR (cmds, rec_nom, params, new_env));  
-            eval_block new_env mem (ASTBlock cmds) sortie
-  
-        | _ -> failwith ("Procédure non définie: " ^ p))
-
-
-        and eval_def (env: env) (mem: memory) (d: def) : env * memory =
-          match d with
-          | ASTConst (x, _, e) ->  
-              let v = eval_expr env mem e in
-              Hashtbl.add env x v;  (* Associe directement la valeur à la variable dans l'environnement *)
-              (env, mem) 
-        
-          | ASTVar (x, _) ->  
-              let addr = alloc mem in  
-              Hashtbl.add env x (InA addr); 
-              (env, mem)
-        
-          | ASTFun (f, _, args, e) ->  
-              Hashtbl.add env f (InF (e, args, env)); 
-              (env, mem)
-        
-          | ASTFunRec (f, _, args, e) ->  
-              let rec_env = Hashtbl.copy env in  (* Environnement temporaire pour la récursivité*)
-              let self_ref = InFR (e, f, args, rec_env) in
-              Hashtbl.add rec_env f self_ref;  (* Ajoute la fonction récursive à son propre env *)
-              Hashtbl.add env f self_ref; 
-              (env, mem)
-        
-          | ASTProc (p, args, ASTBlock block) ->  
-              Hashtbl.add env p (InP (block, args, env)); 
-              (env, mem)
-        
-          | ASTProcRec (p, args, ASTBlock block) ->  
-              let rec_env = Hashtbl.copy env in  
-              let self_ref = InPR (block, p, args, rec_env) in
-              Hashtbl.add rec_env p self_ref;  
-              Hashtbl.add env p self_ref;  
-              (env, mem)
-        
+             | InZ n -> (mem1, InZ n :: out)
+             | _ -> failwith "ECHO ne peut afficher que des entiers")
       
+        | ASTSet (lv, e) ->
+            let (addr, mem1) = eval_lval env mem lv in
+            let (v, mem2) = eval_expr env mem1 e in
+            (match v with
+             | InZ _ | InB _ ->
+                 store mem2 addr v;
+                 (mem2, out)
+             | _ -> failwith "SET : type non mémorisable")
+      
+        | ASTIfStat (cond, b1, b2) ->
+            let (vc, mem1) = eval_expr env mem cond in
+            (match vc with
+             | InZ 1 -> eval_block env mem1 b1 out
+             | InZ 0 -> eval_block env mem1 b2 out
+             | _ -> failwith "IF : condition non booléenne")
+      
+        | ASTWhile (cond, body) ->
+            let rec loop mem_acc out_acc =
+              let (vc, mem1) = eval_expr env mem_acc cond in
+              match vc with
+              | InZ 1 ->
+                  let (mem2, out2) = eval_block env mem1 body out_acc in
+                  loop mem2 out2
+              | InZ 0 -> (mem_acc, out_acc)
+              | _ -> failwith "WHILE : condition non booléenne"
+            in
+            loop mem out
+      
+        | ASTCall (pname, args) ->
+            match Hashtbl.find_opt env pname with
+            | Some (InP (cmds, params, closure_env))
+            | Some (InPR (cmds, _, params, closure_env)) ->
+                (* Vérifie que le nombre d'arguments et de paramètres correspond *)
+                if List.length args <> List.length params then
+                  failwith (pname ^ " : mauvais nombre d'arguments");
+      
+                (* Associe chaque paramètre à son argument en évaluant selon le mode *)
+                let rec eval_args acc mem ps as_ =
+                  match ps, as_ with
+                  | [], [] -> (List.rev acc, mem)
+                  | ASTArgProc (x, _) :: ps', ASTExpr e :: as' ->
+                      let (v, m') = eval_expr env mem e in
+                      eval_args ((x, v) :: acc) m' ps' as'
+                  | ASTArgProcVar (x, _) :: ps', ASTExprProc id :: as' -> (
+                      match Hashtbl.find_opt env id with
+                      | Some (InA addr) -> eval_args ((x, InA addr) :: acc) mem ps' as'
+                      | _ -> failwith (id ^ " : attendu une variable (adresse)")
+                    )
+                  | _ -> failwith "Appel procédure : arguments non compatibles"
+                in
+      
+                let (bindings, mem1) = eval_args [] mem params args in
+      
+                (* création de l’environnement local *)
+                let local_env = Hashtbl.copy closure_env in
+                List.iter (fun (x, v) -> Hashtbl.add local_env x v) bindings;
+      
+                (match Hashtbl.find_opt env pname with
+                 | Some (InPR _) ->
+                     Hashtbl.replace local_env pname (InPR (cmds, pname, params, local_env))
+                 | _ -> ());
+      
+                (* on évalue le corps de la procédure *)
+                eval_block local_env mem1 (ASTBlock cmds) out
+      
+            | _ -> failwith (pname ^ " : Procédure non définie")
+      
+(* Evaluation d'une définition *)
+and eval_def (env : env) (mem : memory) (d : def) : env * memory =
+  match d with
+  | ASTConst (x, _, e) ->
+      let (v, mem1) = eval_expr env mem e in
+      Hashtbl.add env x v;
+      (env, mem1)
+  | ASTVar (x, _) ->
+      let addr = alloc mem in
+      Hashtbl.add env x (InA addr);
+      (env, mem)
+  | ASTFun (f, _, args, body) ->
+      let closure_env = Hashtbl.copy env in
+        let vf = InF (body, args, closure_env) in
+        Hashtbl.add env f vf;
+        (env, mem)
+    
+  | ASTFunRec (f, _, args, body) ->
+      let rec_env = Hashtbl.copy env in
+        let self = InFR (body, f, args, rec_env) in
+        Hashtbl.add rec_env f self;
+        Hashtbl.add env f self;
+        (env, mem)
+    
+  | ASTProc (p, args, ASTBlock cmds) ->
+      Hashtbl.add env p (InP (cmds, args, env));
+      (env, mem)
+  | ASTProcRec (p, args, ASTBlock cmds) ->
+      let rec_env = Hashtbl.copy env in
+      let self = InPR (cmds, p, args, rec_env) in
+      Hashtbl.add rec_env p self;
+      Hashtbl.add env p self;
+      (env, mem)
 
-(* Évaluation d'une suite de commandes *)
-and eval_cmds (env: env) (mem: memory) (cmds: cmds) (sortie: sortie) : memory * sortie =
+(* Evaluation d'une suite de commandes *)
+and eval_cmds (env : env) (mem : memory) (cmds : cmds) (out : sortie) : memory * sortie =
   match cmds with
-  | ASTDef (d, mCmds) ->  
-      let new_env, new_mem = eval_def env mem d in  
-      eval_cmds new_env new_mem mCmds sortie  
+  | ASTStat s -> eval_stat env mem s out
+  | ASTDef (d, cs) ->
+      let env1, mem1 = eval_def env mem d in
+      eval_cmds env1 mem1 cs out
+  | ASTStatCMDS (s, cs) ->
+      let mem1, out1 = eval_stat env mem s out in
+      eval_cmds env mem1 cs out1
 
-  | ASTStat s ->  
-      let update_mem, update_sortie = eval_stat env mem s sortie in 
-      (update_mem, update_sortie)  
+  (*evaluation d'un bloc de commandes*)
+and eval_block (env : env) (mem : memory) (block : block) (out : sortie) : memory * sortie =
+  match block with
+  | ASTBlock cs -> eval_cmds env mem cs out
 
-  | ASTStatCMDS (s, cmds) ->  
-      let intermediate_mem, intermediate_sortie = eval_stat env mem s sortie in  
-      eval_cmds env intermediate_mem cmds intermediate_sortie 
-
-
-and eval_block (env: env) (mem: memory) (block: Ast.block) (sortie: sortie) : memory * sortie =
-    match block with
-    | ASTBlock cmds -> eval_cmds env mem cmds sortie
-
-(* Évaluation d'un programme *)
-
-and eval_prog (block: Ast.block) : sortie =
-  let env = Hashtbl.create 100 in  
-  let mem = Memory.create 100 in  
-  let _, sortie = eval_block env mem block [] in
-  sortie
-
-;;
-
-	
+  (* évaluation d'un programme *)
+and eval_prog (b : block) : sortie =
+  let env = Hashtbl.create 100 in
+  let mem = Hashtbl.create 100 in
+  let _, out = eval_block env mem b [] in
+  List.rev out

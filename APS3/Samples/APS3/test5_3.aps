@@ -1,8 +1,0 @@
-[
-  FUN isZero bool [ x : int ] [
-    IF (eq x 0)
-      [ RETURN true ]
-      [ RETURN false ]
-  ];
-  RETURN (isZero 0)
-]

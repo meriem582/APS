@@ -1,10 +1,3 @@
-#!/bin/bash
-
-#fichier egalement travailler avec chatGPT pour que je puisse automatiser 
-#la compilation des mes fichiers egalement de lancer directement l'executable qui est Eval
-
-#!/bin/bash
-
 # 🚀 Fichier amélioré pour compiler et exécuter un ou plusieurs fichiers
 set -e  # Arrêter le script en cas d'erreur
 

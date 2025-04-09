@@ -3,8 +3,7 @@
   SET x 0;
   WHILE (lt x 10) [
     IF (eq x 5)
-      [ RETURN true ]
+      [ RETURN x ]
       [ SET x (add x 1) ]
-  ];
-  RETURN false
+  ]
 ]

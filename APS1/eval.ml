@@ -131,12 +131,10 @@ let rec eval_expr (env: env) (mem: memory) (e: expr) : valeur =
         let func_value = eval_expr env mem func in
         match func_value with
         | InF (body, params, closure_env) -> 
-            (* Création d'un nouvel environnement avec les arguments *)
             let new_env = Hashtbl.copy closure_env in
             List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add new_env x v) params args_values;
             eval_expr new_env mem body
         | InFR (body, name, params, closure_env) ->
-            (* Environnement récursif pour l'auto-référence *)
             let rec_env = Hashtbl.copy closure_env in
             Hashtbl.add rec_env name (InFR (body, name, params, rec_env));
             List.iter2 (fun (Arg (x, _)) v -> Hashtbl.add rec_env x v) params args_values;
@@ -213,16 +211,17 @@ let rec eval_expr (env: env) (mem: memory) (e: expr) : valeur =
               Hashtbl.add env x (InA addr); 
               (env, mem)
         
-          | ASTFun (f, _, args, e) ->  
-              Hashtbl.add env f (InF (e, args, env)); 
-              (env, mem)
-        
-          | ASTFunRec (f, _, args, e) ->  
-              let rec_env = Hashtbl.copy env in  (* Environnement temporaire pour la récursivité*)
-              let self_ref = InFR (e, f, args, rec_env) in
-              Hashtbl.add rec_env f self_ref;  (* Ajoute la fonction récursive à son propre env *)
-              Hashtbl.add env f self_ref; 
-              (env, mem)
+          | ASTFun (f, _, args, e) ->
+                let closure_env = Hashtbl.copy env in
+                Hashtbl.add env f (InF (e, args, closure_env));
+                (env, mem)
+          
+          | ASTFunRec (f, _, args, e) ->
+                let rec_env = Hashtbl.copy env in
+                let self_ref = InFR (e, f, args, rec_env) in
+                Hashtbl.add rec_env f self_ref;
+                Hashtbl.add env f self_ref;
+                (env, mem)
         
           | ASTProc (p, args, ASTBlock block) ->  
               Hashtbl.add env p (InP (block, args, env)); 
@@ -263,7 +262,7 @@ and eval_prog (block: Ast.block) : sortie =
   let env = Hashtbl.create 100 in  
   let mem = Memory.create 100 in  
   let _, sortie = eval_block env mem block [] in
-  sortie
+  List.rev sortie
 
 ;;
 

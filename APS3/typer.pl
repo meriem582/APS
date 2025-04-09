@@ -36,7 +36,7 @@ is_type_prog(G0, prog(CS), void) :- is_type_block(G0, CS, void).
 
 
 /*Block*/
-is_type_block(G, block(CS), void) :- is_type_cmds(G, CS, void).
+is_type_block(G, block(CS), T) :- is_type_cmds(G, CS, T).
 
 /*suite de commandes*/
 /* les DEFS */
@@ -53,9 +53,7 @@ is_type_cmds(G, X, T) :- is_type_stat(G,X,T).
 is_type_cmds(_,[],void).
 
 /* Returne */
-is_type_cmds(G,[S, return(E)],T) :-
-    is_type_stat(G,S,union(T, void)),
-    is_type_expr(G,E,T).
+is_type_cmds(G,[return(E)],T) :- is_type_expr(G,E,T), T \= void.
 
 /* STAT0 */
 is_type_cmds(G,[S|CS],T) :- is_type_stat(G,S,void), is_type_cmds(G,CS,T).
@@ -138,9 +136,6 @@ is_type_stat(G,while(E,BK),union(T, void)) :- is_type_expr(G,E,bool), is_type_bl
 
 /*CALL*/
 is_type_stat(G,call(X,EI),void) :- is_type_expr(G,X,arrow(TI,void)), check_args(G,EI,TI).
-
-/* RETURN */
-is_type_stat(_, return(X), T) :- is_type_expr(_, X, T).
 
 /*LVALUE*/
 is_type_lvalue(G,id(X),T) :- is_type_expr(G,id(X),ref(T)).

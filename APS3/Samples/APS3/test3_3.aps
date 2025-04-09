@@ -1,8 +1,9 @@
 [
   VAR x int;
-  SET x 0;
-  IF (eq x 0)
-    [ RETURN 1 ]
-    [ SET x (add x 1) ];
-  RETURN 0
+  SET x 42;
+  VAR y int;
+  SET y 0;
+  IF (eq 1 1)
+    [ RETURN x ]
+    [ RETURN y ]
 ]
