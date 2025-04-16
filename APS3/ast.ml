@@ -61,15 +61,18 @@ and def =
   | ASTVar of string * typ
   | ASTProc of string * argProc list * block
   | ASTProcRec of string * argProc list * block 
+  (*Rajouter pour APS3*)
   | ASTFunDec of string * typ * argProc list * block
   | ASTFunRecDec of string * typ * argProc list * block
 
 and cmds =
+  (*Rajouter pour APS3*)
   | ASTRetCMDS of ret
   | ASTStat of stat
   | ASTDef of def * cmds
   | ASTStatCMDS of stat * cmds
 
+(*Rajouter pour APS3*)
 and ret = 
   | ASTRet of expr
 

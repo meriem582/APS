@@ -24,6 +24,7 @@
     | "or" {  OR }
     | "bool" {  BOOL }
     | "int" {  INT }
+    (*Rajouter pour APS1*)
     | "void" {  VOID }
     | "IF" { IFSTAT }
     | "SET" { SET }

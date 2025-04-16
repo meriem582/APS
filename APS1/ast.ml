@@ -12,7 +12,10 @@
 
 
 (* Types de base *)
-type base_type = TInt | TBool | TVoid
+type base_type = TInt 
+  | TBool 
+(*Rajouter pour APS1*)
+  | TVoid
 
 type typ =
   | BaseType of base_type
@@ -31,6 +34,7 @@ type expr =
 
 type stat = 
   | ASTEcho of expr
+  (*Rajouter pour APS1*)
   | ASTSet of string * expr
   | ASTIfStat of expr * block * block
   | ASTWhile of expr * block
@@ -40,6 +44,7 @@ and def =
   | ASTConst of string * typ * expr
   | ASTFun of string * typ * arg list * expr
   | ASTFunRec of string * typ * arg list * expr
+  (*Rajouter pour APS1*)
   | ASTVar of string * typ
   | ASTProc of string * arg list * block
   | ASTProcRec of string * arg list * block 
@@ -47,7 +52,9 @@ and def =
 and cmds =
   | ASTStat of stat
   | ASTDef of def * cmds
+  (*Rajouter pour APS1*)
   | ASTStatCMDS of stat * cmds
 
+(*Rajouter pour APS1*)
 and block = 
   |ASTBlock of cmds

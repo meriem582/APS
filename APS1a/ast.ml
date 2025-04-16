@@ -20,6 +20,7 @@ type typ =
 
 type arg = Arg of string * typ
 
+(*Rajouter pour APS1a*)
 type argProc =
   | ASTArgProc of string * typ
   | ASTArgProcVar of string * typ
@@ -34,6 +35,7 @@ type expr =
   | ASTApp of expr * expr list
   | ASTLambda of arg list * expr
 
+(*Rajouter pour APS1a*)
 type exprProc =
   | ASTExpr of expr
   | ASTExprProc of string
@@ -50,6 +52,7 @@ and def =
   | ASTFun of string * typ * arg list * expr
   | ASTFunRec of string * typ * arg list * expr
   | ASTVar of string * typ
+  (*Modifier pour APS1a*)
   | ASTProc of string * argProc list * block
   | ASTProcRec of string * argProc list * block 
 

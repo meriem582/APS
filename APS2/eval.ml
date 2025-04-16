@@ -25,27 +25,32 @@ let alloc (mem : memory) : address =
   Hashtbl.add mem addr None;
   addr
 
-(*cette fonction permet de générer une liste d'entiers de start à stop-1*)
-(*elle va nous servir pour générer une liste d'adresses*)
-let rec gen_range start stop =
-  if start >= stop then [] else start :: gen_range (start + 1) stop
-
-
-(*cette fonction va nous permettre de trouver un bloc libre dans la mémoire*)
-let rec find_free_block mem size from limit =
-  if from + size > limit then failwith "Out of memory"
-  else
-    let block = gen_range from (from + size) in
-    if List.for_all (fun a -> not (Hashtbl.mem mem a)) block then from
-    else find_free_block mem size (from + 1) limit
-
-(*cette fonction va allouer un bloc de mémoire de taille size*)
-let allocn mem size =
-  let limit = 10000 in
-  let base = find_free_block mem size !next_address limit in
-  for i = 0 to size - 1 do Hashtbl.add mem (base + i) None done;
-  next_address := base + size;
-  base, mem
+  let allocn mem size =
+    let addr = ref !next_address in  
+    (* Vérifie si on peut allouer size cellules à partir de addr *)
+    let rec can_allocate_from a =
+      if a + size > 10000 then false
+      else
+        let all_free = ref true in
+        for i = 0 to size - 1 do
+          if Hashtbl.mem mem (a + i) then all_free := false
+        done;
+        !all_free
+    in
+  
+    (* Trouve un bloc allouable en avançant *)
+    while not (can_allocate_from !addr) do
+      incr addr
+    done;
+  
+    (* Alloue *)
+    for i = 0 to size - 1 do
+      Hashtbl.add mem (!addr + i) None
+    done;
+  
+    next_address := !addr + size;
+    (!addr, mem)
+  
 
 let store mem addr v =
   match v with

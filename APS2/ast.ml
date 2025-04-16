@@ -17,6 +17,7 @@ type base_type = TInt | TBool | TVoid
 type typ =
   | BaseType of base_type
   | ASTArrow of typ list * typ
+  (*Rajouter pour APS2*)
   | ASTVec of typ
 
 type arg = Arg of string * typ
@@ -34,6 +35,7 @@ type expr =
   | ASTOr of expr * expr
   | ASTApp of expr * expr list
   | ASTLambda of arg list * expr
+  (*Rajouter pour APS2*)
   | ASTAlloc of expr
   | ASTLen of expr
   | ASTNth of expr * expr
@@ -45,11 +47,13 @@ type exprProc =
 
 type stat = 
   | ASTEcho of expr
+  (*Rajouter pour APS2*)
   | ASTSet of lval * expr
   | ASTIfStat of expr * block * block
   | ASTWhile of expr * block
   | ASTCall of string * exprProc list
 
+(*Rajouter pour APS2*)
 and lval =
   | ASTLvalIdent of string
   | ASTLvalNth of lval * expr
