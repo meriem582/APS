@@ -160,6 +160,5 @@ Tout ce qui concerne le typage et ses règles est déjà expliqué dans le fichi
    - ChatGPT pour résoudre des problèmes ponctuels et générer des idées de scripts de test automatisés.  
 2. **Projets externes** :  
    - Dépôt GitHub consulté (à titre informatif) : [Sorbonne_APS](https://github.com/valeeraZ/Sorbonne_APS).  
-   - Les emprunts éventuels sont explicitement commentés dans le code.  
 3. **Collaborateurs** :  
    Aucune collaboration directe avec d'autres groupes.  
